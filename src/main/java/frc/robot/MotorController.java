@@ -26,7 +26,7 @@ public class MotorController {
 
     public void setDart(Boolean paid, Boolean laid) {
         // push = push out & suck is pull in :D
-        if (Darty.getValue() > 50 && Darty.getValue() < 3900) {
+        /*if (Darty.getValue() > 50 && Darty.getValue() < 3900) {
             if (!paid && laid) {
                 collect.set(0.6);
             } else if (!laid && paid) {
@@ -36,8 +36,16 @@ public class MotorController {
             } else {
                 collect.set(0);
             }
-        }
+        }*/
 
+
+            if (!paid && laid && Darty.getValue() < 3900) {
+                collect.set(0.8);
+            } else if (!laid && paid && Darty.getValue() > 50) {
+                collect.set(-0.8);
+            } else {
+                collect.set(0);
+            }
     }
 
 
