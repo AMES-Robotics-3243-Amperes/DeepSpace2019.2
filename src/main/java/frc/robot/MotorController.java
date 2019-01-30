@@ -40,7 +40,7 @@ public class MotorController {
 
     }
 
-    // freak out - break git bash
+    // Dart Linear Actuator - don't break git bash
     public void setDartMotor() {
 
         System.out.println("Move 1: " + Darty.getValue());
@@ -58,7 +58,7 @@ public class MotorController {
         float min_command = 0.05f;
         float refArea = 4.50f;
 
-        if (value == true) {
+        if (value == true) { // value reads the activation button from the joystick
             double heading_error = (float) x;
             double steering_adjust = 0.0d;
             double distance_error = (float) area;
