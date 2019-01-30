@@ -57,7 +57,7 @@ public class MotorController {
         float min_command = 0.05f;
         float refArea = 4.50f;
 
-        if (value == true) {
+        if (value == true) { // value reads the activation button from the joystick
             double heading_error = (float) x;
             double steering_adjust = 0.0d;
             double distance_error = (float) area;
