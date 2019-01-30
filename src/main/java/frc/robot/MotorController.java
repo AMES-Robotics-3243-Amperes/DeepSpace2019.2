@@ -48,7 +48,7 @@ public class MotorController {
 
     }
 
-    // For Vision 2019
+    // For Vision Targeting 2019
     public void setVision(boolean value, double x, double v, double area) {
         float KpSteering = 0.00002f;
         float KpSteering2 = 0.025f;
