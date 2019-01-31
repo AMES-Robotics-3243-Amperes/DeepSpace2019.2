@@ -7,11 +7,18 @@ public class InputManager {
 
     Joystick firstInput = new Joystick(0);
     Joystick secondInput = new Joystick(1);
-    Double[] stickData = new Double[3];
 
     boolean paid = false;
     boolean laid = false;
     boolean visionButton = false;
+
+    Double [] drivingJoysticks() {
+        Double [] axisVar = new Double[2];
+        axisVar[0] = firstInput.getRawAxis(3);
+        axisVar[1] = firstInput.getRawAxis(1);
+        axisVar = deadZone(axisVar);
+        return axisVar;
+    }
 
     Double[] deadZone(Double[] in) {
         if (-.09 < in[0] && in[0] < .09) {
@@ -26,16 +33,16 @@ public class InputManager {
 
 
     Boolean getPaid() { // Linear Actuator pull in
-        paid = secondInput.getRawButton(5);
+        paid = firstInput.getRawButton(7);
         return paid;
     }
 
     Boolean getLaid() { // Linear Actuator push out
-        laid = secondInput.getRawButton(6);
+        laid = firstInput.getRawButton(8);
         return laid;
     }
 
-    public boolean getGatorade() {
+    public boolean getOrade() {
 
         visionButton = firstInput.getRawButton(5);
 

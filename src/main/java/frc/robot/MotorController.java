@@ -40,20 +40,13 @@ public class MotorController {
         }
 
     }
+    public void drive(Double[] driveSpeed, boolean Vision) {
+        if (!Vision) {
+            driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * 0.40);
+            driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * -0.40);
+        }
+    }
     public void setDart(Boolean paid, Boolean laid) {
-        // push = push out & suck is pull in :D
-        /*if (Darty.getValue() > 50 && Darty.getValue() < 3900) {
-            if (!paid && laid) {
-                collect.set(0.6);
-            } else if (!laid && paid) {
-                collect.set(-0.6);
-            } else if (Darty.getValue() > 3900) {
-                collect.set(-0.6);
-            } else {
-                collect.set(0);
-            }
-        }*/
-
 
             if (!paid && laid && Darty.getValue() < 3900) {
                 collect.set(0.8);

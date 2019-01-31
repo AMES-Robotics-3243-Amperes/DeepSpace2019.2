@@ -118,10 +118,10 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Limelight Pipeline", (double) pipeline.getNumber(-1));
     SmartDashboard.putNumber("See Light?", v);
 
-    MC.setVision(IM.getGatorade(), x, v, area);
+    MC.setVision(IM.getOrade(), x, v, area);
     MC.setDart(IM.getPaid(), IM.getLaid());
     MC.setDartMotor();
-
+    MC.drive(IM.drivingJoysticks(), IM.getOrade());
   }
 
   /**
