@@ -1,12 +1,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.AnalogOutput;
-import edu.wpi.first.wpilibj.DigitalOutput;
-import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.VictorSP;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Spark;
 import com.ctre.phoenix.ILoopable;
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -42,8 +38,8 @@ public class MotorController {
     }
     public void drive(Double[] driveSpeed, boolean Vision) {
         if (!Vision) {
-            driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * 0.40);
-            driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * -0.40);
+            driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * 0.50);
+            driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * -0.50);
         }
     }
     public void setDart(Boolean paid, Boolean laid) {
@@ -57,7 +53,7 @@ public class MotorController {
             }
     }
 
-
+//herp me prease
     public void setDartMotor() {
 
         System.out.println("Move 1: " + Darty.getValue());
@@ -66,7 +62,7 @@ public class MotorController {
 
     }
 
-    // For Vision 2019 ~!
+    // For Vision 2019 ~! :D
     public void setVision(boolean value, double x, double v, double area) {
         float KpSteering = 0.00002f;
         float KpSteering2 = 0.025f;
