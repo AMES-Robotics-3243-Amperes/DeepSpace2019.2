@@ -38,10 +38,10 @@ public class Robot extends TimedRobot {
   NetworkTableEntry ty;
   NetworkTableEntry ta;
   NetworkTableEntry tv;
-
   Double[] forward = new Double[2];
   Double[] left = new Double[2];
   Double[] right = new Double[2];
+  Boolean compBot = false; // false is practice
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -59,7 +59,7 @@ public class Robot extends TimedRobot {
 
     camMode.setFlags(1);
     pipeline.setNumber(0);
-
+    MC.setMotorControllers(compBot);
   }
 
   /**

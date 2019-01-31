@@ -23,6 +23,8 @@ public class InputManager {
         return in;
     }
 
+
+
     Boolean getPaid() { // Linear Actuator pull in
         paid = secondInput.getRawButton(5);
         return paid;

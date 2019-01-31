@@ -15,15 +15,31 @@ import com.ctre.phoenix.motorcontrol.can.*;
 
 public class MotorController {
 
-    WPI_TalonSRX driveM1 = new WPI_TalonSRX(2); // right
-    WPI_TalonSRX driveM2 = new WPI_TalonSRX(3); // left
-    WPI_TalonSRX driveM3 = new WPI_TalonSRX(1); // right
-    WPI_TalonSRX driveM4 = new WPI_TalonSRX(4); // left
+    BaseMotorController driveM1;
+    BaseMotorController driveM2;
+    BaseMotorController driveM3;
+    BaseMotorController driveM4;
 
     Float[] alter = new Float[2];
     AnalogInput Darty = new AnalogInput(0);
     Spark collect = new Spark(3);
 
+    public void setMotorControllers(Boolean botType) {
+        if (botType) {                                      //for comp bot
+            driveM1 = new WPI_VictorSPX(1);     // change later
+            driveM2 = new WPI_VictorSPX(2);     // change later
+            driveM3 = new WPI_VictorSPX(3);     // change later
+            driveM4 = new WPI_VictorSPX(4);     // change later
+            
+        }
+        else {                                              //for prac bot
+            driveM1 = new WPI_TalonSRX(2); // right
+            driveM2 = new WPI_TalonSRX(3); // left
+            driveM3 = new WPI_TalonSRX(1); // right
+            driveM4 = new WPI_TalonSRX(4); // left
+        }
+
+    }
     public void setDart(Boolean paid, Boolean laid) {
         // push = push out & suck is pull in :D
         /*if (Darty.getValue() > 50 && Darty.getValue() < 3900) {
@@ -61,10 +77,10 @@ public class MotorController {
     public void setVision(boolean value, double x, double v, double area) {
         float KpSteering = 0.00002f;
         float KpSteering2 = 0.025f;
-        float KpDistance = 0.0001f;
-        float KpDistance2 = 0.08f;
+        float KpDistance = 0.01f;
+        float KpDistance2 = 0.16f;
         float min_command = 0.05f;
-        float refArea = 4.50f;
+        float refArea = 2.25f;
 
         if (value == true) {
             double heading_error = (float) x;
@@ -103,8 +119,8 @@ public class MotorController {
 
             distance_adjust = Math.tanh(distance_adjust) * maxDistAdjust;
             steering_adjust = Math.tanh(steering_adjust) * maxAngAdjust;
-            driveM1.set(alter[0] + steering_adjust + distance_adjust);
-            driveM2.set(alter[1] + steering_adjust - distance_adjust);
+            driveM1.set(ControlMode.PercentOutput, steering_adjust - distance_adjust);
+            driveM2.set(ControlMode.PercentOutput, steering_adjust + distance_adjust);
             driveM3.follow(driveM1);
             driveM4.follow(driveM2);
 
