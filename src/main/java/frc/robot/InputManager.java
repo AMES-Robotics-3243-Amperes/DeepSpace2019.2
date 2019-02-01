@@ -29,15 +29,24 @@ public class InputManager {
         return in;
     }
 
+    Boolean turbo() {
 
+        boolean turbo = firstInput.getRawButton(6);
+        
+        return turbo;
+    }
 
     Boolean getPaid() { // Linear Actuator pull in
+
         paid = firstInput.getRawButton(7);
+        
         return paid;
     }
 
     Boolean getLaid() { // Linear Actuator push out
+
         laid = firstInput.getRawButton(8);
+        
         return laid;
     }
 

@@ -121,7 +121,7 @@ public class Robot extends TimedRobot {
     MC.setVision(IM.getOrade(), x, v, area);
     MC.setDart(IM.getPaid(), IM.getLaid());
     MC.setDartMotor();
-    MC.drive(IM.drivingJoysticks(), IM.getOrade());
+    MC.drive(IM.drivingJoysticks(), IM.getOrade(), IM.turbo());
   }
 
   /**

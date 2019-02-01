@@ -36,10 +36,17 @@ public class MotorController {
         }
 
     }
-    public void drive(Double[] driveSpeed, boolean Vision) {
+    public void drive(Double[] driveSpeed, boolean Vision, boolean turbo) {
         if (!Vision) {
-            driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * 0.50);
-            driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * -0.50);
+            System.out.println(driveM4.getSelectedSensorPosition(0));
+            if (turbo) {
+                driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * 0.75);
+                driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * -0.75);
+            }
+            else {
+                driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * 0.50);
+                driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * -0.50);
+            }
         }
     }
     public void setDart(Boolean paid, Boolean laid) {
@@ -79,6 +86,10 @@ public class MotorController {
             double maxDistAdjust = 0.8d;
             double maxAngAdjust = 1.0d;
 
+            if (-.25 < heading_error && heading_error < .25) {
+                    heading_error = .0;
+            }
+
             if (v == 0.0)
             // We don't see the target, seek for the target by spinning in place at a safe
             // speed.
@@ -89,9 +100,9 @@ public class MotorController {
             else if (x > 0 && v != 0)
             // We do see the target, execute aiming code
             {
-                steering_adjust = (KpSteering * Math.pow(heading_error, 3) + KpSteering2 * heading_error) - min_command;
-            } else if (x < 0 && v != 0) {
                 steering_adjust = (KpSteering * Math.pow(heading_error, 3) + KpSteering2 * heading_error) + min_command;
+            } else if (x < 0 && v != 0) {
+                steering_adjust = (KpSteering * Math.pow(heading_error, 3) + KpSteering2 * heading_error) - min_command;
             }
 
             if (v == 0.0)
@@ -108,6 +119,7 @@ public class MotorController {
 
             distance_adjust = Math.tanh(distance_adjust) * maxDistAdjust;
             steering_adjust = Math.tanh(steering_adjust) * maxAngAdjust;
+            System.out.println("Steering_Adjust = " + steering_adjust);
             driveM1.set(ControlMode.PercentOutput, steering_adjust - distance_adjust);
             driveM2.set(ControlMode.PercentOutput, steering_adjust + distance_adjust);
             driveM3.follow(driveM1);
