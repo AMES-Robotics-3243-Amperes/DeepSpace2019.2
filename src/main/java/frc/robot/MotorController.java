@@ -27,8 +27,8 @@ public class MotorController {
     VictorSPX carWash1 = new VictorSPX(6);
     VictorSPX carWash2 = new VictorSPX(5);
     //VictorSPX collectorBag = new VictorSPX(88);
-    //VictorSPX gearBox1 = new VictorSPX(99);
-    //VictorSPX gearBox2 = new VictorSPX(56);
+    VictorSPX gearBox1 = new VictorSPX(9);
+    VictorSPX gearBox2 = new VictorSPX(8);
     
 
     // 7 & 8 not workable
@@ -68,6 +68,11 @@ public class MotorController {
                 driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * 0.50);
             }
         }
+    }
+
+    public void setLift(Double val){
+        gearBox1.set(ControlMode.PercentOutput, val);
+        gearBox2.set(ControlMode.PercentOutput, -val);
     }
 
     public void setCarMotor(Boolean outPoke, Boolean inPoke){
