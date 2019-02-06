@@ -2,8 +2,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.VictorSP;
-import edu.wpi.first.wpilibj.Spark;
 import com.ctre.phoenix.ILoopable;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -16,58 +14,85 @@ public class MotorController {
     BaseMotorController driveM3;
     BaseMotorController driveM4;
 
-    Float[] alter = new Float[2];
-    AnalogInput Darty = new AnalogInput(0);
-    Spark collect = new Spark(3);
+    //Number values to be changed when electronic board is set up
+    //AnalogInput darty = new AnalogInput(0);
+    //VictorSPX collectDart = new VictorSPX(3);
 
-    public void setMotorControllers(Boolean botType) {
-        if (botType) {                                      //for comp bot
-            driveM1 = new WPI_VictorSPX(1);     // change later
-            driveM2 = new WPI_VictorSPX(2);     // change later
-            driveM3 = new WPI_VictorSPX(3);     // change later
-            driveM4 = new WPI_VictorSPX(4);     // change later
-            
-        }
-        else {                                              //for prac bot
-            driveM1 = new WPI_TalonSRX(2); // right
-            driveM2 = new WPI_TalonSRX(3); // left
-            driveM3 = new WPI_TalonSRX(1); // right
-            driveM4 = new WPI_TalonSRX(4); // left
-        }
+    //AnalogInput darty2 = new AnalogInput(5);
+   // VictorSPX collectDart2 = new VictorSPX(76);
 
+    //AnalogInput darty3 = new AnalogInput(8);
+    //VictorSPX collectDart3 = new VictorSPX(745);
+
+    VictorSPX carWash1 = new VictorSPX(6);
+    VictorSPX carWash2 = new VictorSPX(5);
+    //VictorSPX collectorBag = new VictorSPX(88);
+    //VictorSPX gearBox1 = new VictorSPX(99);
+    //VictorSPX gearBox2 = new VictorSPX(56);
+    
+
+    // 7 & 8 not workable
+    // 1,2,3 all on driving
+    // left side 1 & 2
+    // right side 3 & 10
+    // 5 & 6 go to car wash motors
+    // 9 gearbox (missing 1 gearbox motor)
+    // no linear actuators (3 of them)
+    // 1 collector motor (missing)
+
+    // 2 car wash motors: just like cim motors (kinda like cube collector from last
+    // year) motor type similar to bag motor
+    // 3 linear actuator: use buttons to push out (increase numbers) and push in
+    // (decrease numbers) 3 mini cims
+    // collector: controls conveyor belt 1 Bag motor(?) controls it
+    // gearbox: wraps up rope on a spool. Powered by two mini cims
+
+    public void setMotorControllers() {
+        driveM1 = new WPI_VictorSPX(1);
+        driveM2 = new WPI_VictorSPX(3);
+        driveM3 = new WPI_VictorSPX(2);
+        driveM4 = new WPI_VictorSPX(8); // change when new VictorSPX for motor 4 come
+        // odds are left side and evens are right side of joystick
+        driveM3.follow(driveM1);
+        driveM4.follow(driveM2);
     }
+
     public void drive(Double[] driveSpeed, boolean Vision, boolean turbo) {
         if (!Vision) {
             System.out.println(driveM4.getSelectedSensorPosition(0));
             if (turbo) {
-                driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * 0.75);
-                driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * -0.75);
-            }
-            else {
-                driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * 0.50);
-                driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * -0.50);
+                driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * -0.75);
+                driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * 0.75);
+            } else {
+                driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * -0.50);
+                driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * 0.50);
             }
         }
     }
-    public void setDart(Boolean paid, Boolean laid) {
 
-            if (!paid && laid && Darty.getValue() < 3900) {
-                collect.set(0.8);
-            } else if (!laid && paid && Darty.getValue() > 50) {
-                collect.set(-0.8);
-            } else {
-                collect.set(0);
-            }
+    public void setCarMotor(Boolean outPoke, Boolean inPoke){
+        if(outPoke == true && !inPoke){
+            carWash1.set(ControlMode.PercentOutput, 0.75);
+            carWash2.set(ControlMode.PercentOutput, -0.75);
+        } else if(!outPoke && inPoke == true){
+            carWash1.set(ControlMode.PercentOutput, -0.75);
+            carWash2.set(ControlMode.PercentOutput, 0.75);
+        } else{
+            carWash1.set(ControlMode.PercentOutput, 0.0);
+            carWash2.set(ControlMode.PercentOutput, 0.0);
+        }
     }
 
-//herp me prease
-    public void setDartMotor() {
+    /*public void setDart(Boolean paid, Boolean laid) {
 
-        System.out.println("Move 1: " + Darty.getValue());
-        System.out.print("");
-        System.out.println("Move 2: " + Darty.getValue());
-
-    }
+        if (!paid && laid && darty.getValue() < 3900) {
+            collectDart.set(ControlMode.PercentOutput, 0.80);
+        } else if (!laid && paid && darty.getValue() > 50) {
+            collectDart.set(ControlMode.PercentOutput, -0.80);
+        } else {
+            collectDart.set(ControlMode.PercentOutput, 0.0);
+        }
+    }*/
 
     // For Vision 2019 ~! :D
     public void setVision(boolean value, double x, double v, double area) {
@@ -87,7 +112,7 @@ public class MotorController {
             double maxAngAdjust = 1.0d;
 
             if (-.25 < heading_error && heading_error < .25) {
-                    heading_error = .0;
+                heading_error = .0;
             }
 
             if (v == 0.0)
