@@ -18,17 +18,17 @@ public class MotorController {
     AnalogInput darty = new AnalogInput(0);
     VictorSPX collectDart = new VictorSPX(3);
 
-    AnalogInput darty2 = new AnalogInput(5);
+    AnalogInput darty2 = new AnalogInput(3);
     VictorSPX collectDart2 = new VictorSPX(76);
 
-    AnalogInput darty3 = new AnalogInput(8);
-    VictorSPX collectDart3 = new VictorSPX(745);
+    AnalogInput darty3 = new AnalogInput(2);
+    VictorSPX collectDart3 = new VictorSPX(70);
 
     VictorSPX carWash1 = new VictorSPX(6);
     VictorSPX carWash2 = new VictorSPX(5);
-    VictorSPX collectorBag = new VictorSPX(12);
-    VictorSPX gearBox1 = new VictorSPX(9);
-    VictorSPX gearBox2 = new VictorSPX(8);
+    VictorSPX collectorBag = new VictorSPX(4);
+    VictorSPX gearBox1 = new VictorSPX(1);
+    VictorSPX gearBox2 = new VictorSPX(2);
     
 
     // 7 & 8 not workable
@@ -48,13 +48,14 @@ public class MotorController {
     // gearbox: wraps up rope on a spool. Powered by two mini cims
 
     public void setMotorControllers() {
-        driveM1 = new WPI_VictorSPX(1);
+        driveM1 = new WPI_VictorSPX(11);
         driveM2 = new WPI_VictorSPX(3);
-        driveM3 = new WPI_VictorSPX(2);
-        driveM4 = new WPI_VictorSPX(8); // change when new VictorSPX for motor 4 come
+        driveM3 = new WPI_VictorSPX(12);
+        driveM4 = new WPI_VictorSPX(10); // change when new VictorSPX for motor 4 come
         // odds are left side and evens are right side of joystick
         driveM3.follow(driveM1);
         driveM4.follow(driveM2);
+        gearBox2.follow(gearBox1);
     }
 
     public void drive(Double[] driveSpeed, boolean Vision, boolean turbo) {
@@ -64,15 +65,14 @@ public class MotorController {
                 driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * -0.75);
                 driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * 0.75);
             } else {
-                driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * -0.45);
-                driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * 0.45);
+                driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * -0.35);
+                driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * 0.35);
             }
         }
     }
 
     public void setLift(Double val){
-        gearBox1.set(ControlMode.PercentOutput, val);
-        gearBox2.set(ControlMode.PercentOutput, -val);
+        gearBox1.set(ControlMode.PercentOutput, val * 0.4);
     }
 
     public void setCarMotor(Boolean outPoke, Boolean inPoke){

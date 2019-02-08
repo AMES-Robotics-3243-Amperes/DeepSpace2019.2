@@ -157,7 +157,8 @@ public class InputManager {
     
     Double getLift(){
 
-        liftVal = Math.signum(((Math.pow(secondInput.getRawAxis(3), 3))*(2/3)));
+        liftVal = secondInput.getRawAxis(3);
+        //liftVal = Math.signum(((Math.pow(secondInput.getRawAxis(3), 3))*(2/3)));
         //Math.signum makes it so that any number above 1 will turn into 1 and any number below -1 will turn into -1
         //secondInput right joystick up down    
         return liftVal;
