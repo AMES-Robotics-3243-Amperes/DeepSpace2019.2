@@ -15,18 +15,18 @@ public class MotorController {
     BaseMotorController driveM4;
 
     //Number values to be changed when electronic board is set up
-    //AnalogInput darty = new AnalogInput(0);
-    //VictorSPX collectDart = new VictorSPX(3);
+    AnalogInput darty = new AnalogInput(0);
+    VictorSPX collectDart = new VictorSPX(3);
 
-    //AnalogInput darty2 = new AnalogInput(5);
-   // VictorSPX collectDart2 = new VictorSPX(76);
+    AnalogInput darty2 = new AnalogInput(5);
+    VictorSPX collectDart2 = new VictorSPX(76);
 
-    //AnalogInput darty3 = new AnalogInput(8);
-    //VictorSPX collectDart3 = new VictorSPX(745);
+    AnalogInput darty3 = new AnalogInput(8);
+    VictorSPX collectDart3 = new VictorSPX(745);
 
     VictorSPX carWash1 = new VictorSPX(6);
     VictorSPX carWash2 = new VictorSPX(5);
-    //VictorSPX collectorBag = new VictorSPX(88);
+    VictorSPX collectorBag = new VictorSPX(12);
     VictorSPX gearBox1 = new VictorSPX(9);
     VictorSPX gearBox2 = new VictorSPX(8);
     
@@ -59,13 +59,13 @@ public class MotorController {
 
     public void drive(Double[] driveSpeed, boolean Vision, boolean turbo) {
         if (!Vision) {
-            System.out.println(driveM4.getSelectedSensorPosition(0));
+            //System.out.println(driveM4.getSelectedSensorPosition(0));
             if (turbo) {
                 driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * -0.75);
                 driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * 0.75);
             } else {
-                driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * -0.50);
-                driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * 0.50);
+                driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * -0.45);
+                driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * 0.45);
             }
         }
     }
@@ -87,8 +87,18 @@ public class MotorController {
             carWash2.set(ControlMode.PercentOutput, 0.0);
         }
     }
+    public void setBelt(Boolean belter, Boolean beltee) {
 
-    /*public void setDart(Boolean paid, Boolean laid) {
+        if (belter && !beltee) {
+            collectorBag.set(ControlMode.PercentOutput, 0.55);
+        } else if (!belter && beltee) {
+            collectorBag.set(ControlMode.PercentOutput, -0.55);
+        } else {
+            collectorBag.set(ControlMode.PercentOutput, 0.0);
+        }
+    }
+    
+    public void setDart(Boolean paid, Boolean laid, Boolean paidUpfront, Boolean laidUpfront) {
 
         if (!paid && laid && darty.getValue() < 3900) {
             collectDart.set(ControlMode.PercentOutput, 0.80);
@@ -97,7 +107,18 @@ public class MotorController {
         } else {
             collectDart.set(ControlMode.PercentOutput, 0.0);
         }
-    }*/
+        
+        if (!paidUpfront && laidUpfront && darty2.getValue() < 3900 && darty3.getValue() < 3900) {
+            collectDart2.set(ControlMode.PercentOutput, 0.80);
+            collectDart3.set(ControlMode.PercentOutput, 0.80);
+        } else if (!laidUpfront && paidUpfront && darty2.getValue() > 50 && darty3.getValue() > 50) {
+            collectDart2.set(ControlMode.PercentOutput, -0.80);
+            collectDart3.set(ControlMode.PercentOutput, -0.80);
+        } else {
+            collectDart2.set(ControlMode.PercentOutput, 0.0);
+            collectDart3.set(ControlMode.PercentOutput, 0.0);
+        }
+    }
 
     // For Vision 2019 ~! :D
     public void setVision(boolean value, double x, double v, double area) {

@@ -119,10 +119,11 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("See Light?", v);
 
     MC.setVision(IM.getOrade(), x, v, area);
-    //MC.setDart(IM.getPaid(), IM.getLaid());
+    MC.setDart(IM.getPaid(), IM.getLaid(), IM.getPaidUpFront(), IM.getLaidUpFront());
     MC.setLift(IM.getLift());
     MC.setCarMotor(IM.getoutPoke(), IM.getinPoke());
     MC.drive(IM.drivingJoysticks(), IM.getOrade(), IM.turbo());
+    MC.setBelt(IM.getBelter(), IM.getBeltee());
   }
 
   /**
