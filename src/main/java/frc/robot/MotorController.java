@@ -175,7 +175,7 @@ public class MotorController {
 
 
 
-/*
+////////////this is front & back dartPos split up
     public void extendBackDartM(int Position, AnalogInput input, VictorSP dartM){
         if(input.getValue() < Position + DARTMOUTH && input.getValue() > Position - DARTMOUTH){
             dartM.set(0.0);
@@ -222,11 +222,13 @@ public class MotorController {
             dartM.set(0.0);
         }
     }
-*/
+///////////to here
 
 
 
-    public void setDart(Boolean paidBack, Boolean laidBack, Boolean paidUpfront, Boolean laidUpfront) { //for all three darts
+
+
+    /*public void setDart(Boolean paidBack, Boolean laidBack, Boolean paidUpfront, Boolean laidUpfront) { //for all three darts
 
         int backPosition = 270;
         if(laidBack){
@@ -256,13 +258,56 @@ public class MotorController {
         retractFrontDartM(frontPositionL, darty3, collectDart3); // front left dart
         } else {
             collectDart.set(0.0);
-        }*/
+        }
         
         dartPosBack(backPosition, darty, collectDart);
         dartPosFront(frontPositionR, darty2, collectDart2);
         dartPosFront(frontPositionL, darty3, collectDart3);
         //System.out.println(darty.getValue() + "  " + darty2.getValue() + "  " + darty3.getValue());
-    }
+}*/
+
+
+
+// TESTING IT OUT
+    public void setDart(Boolean paid, Boolean laid, Boolean paidUpfront, Boolean laidUpfront) {
+
+        if (!paid && laid && darty.getValue() < 270 + DARTMOUTH) {
+            if(darty.getValue() > 270 + SLOWDOWN){
+                collectDart.set(ControlMode.PercentOutput, 0.75);
+            else{ collectDart.set(ControlMode.PercentOutput, 0.25);
+            }
+        } else if (!laid && paid && darty.getValue() > 3650 - DARTMOUTH) {
+            if(darty.getValue() < 3650 - SLOWDOWN){
+                collectDart.set(ControlMode.PercentOutput, -0.5);
+            else collectDart.set(ControlMode.PercentOutput, -0.25);
+        } else {
+        collectDart.set(ControlMode.PercentOutput, 0.0);
+        }
+        if (!paidUpfront && laidUpfront && darty2.getValue() < 104 + DARTMOUTH && darty3.getValue() < 275 + DARTMOUTH) {
+            if(darty2.getValue() > 104 + SLOWDOWN && darty3.getValue() > 275 + SLOWDOWN){
+                collectDart2.set(ControlMode.PercentOutput, 0.75);
+                collectDart3.set(ControlMode.PercentOutput, 0.75);
+            else{ 
+                collectDart2.set(ControlMode.PercentOutput, 0.25);
+                collectDart3.set(ControlMode.PercentOutput, 0.25);
+            }
+        } else if (!laid && paid && darty2.getValue() > 3425 - DARTMOUTH && darty3.getValue() > 3600 - DARTMOUTH) {
+            if(darty2.getValue() < 3425 - SLOWDOWN && darty3.getValue() < 3600 - SLOWDOWN){
+                collectDart2.set(ControlMode.PercentOutput, -0.5);
+                collectDart3.set(ControlMode.PercentOutput, -0.5);
+            else{
+                collectDart2.set(ControlMode.PercentOutput, -0.25);
+                collectDart3.set(ControlMode.PercentOutput, -0.25);
+        } else {
+        collectDart.set(ControlMode.PercentOutput, 0.0);
+        collectDart2.set(ControlMode.PercentOutput, 0.0);
+        collectDart3.set(ControlMode.PercentOutput, 0.0);
+        }
+///////////////////////
+
+
+
+
 
     // For Vision 2019 ~! :D
     public void setVision(boolean value, double x, double v, double area) {
