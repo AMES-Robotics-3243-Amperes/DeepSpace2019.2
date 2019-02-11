@@ -54,7 +54,6 @@ public class InputManager {
 
     boolean paid = false;
     boolean laid = false;
-    //boolean paidUpfront
     boolean paidUpfront = false;
     boolean laidUpfront = false;
 
@@ -65,26 +64,51 @@ public class InputManager {
     boolean inPoke = false;
     boolean visionButton = false;
 
+    boolean turboToggle = true;
+    boolean cargoDepositToggle = false;
+
     Double liftVal;
+
+    Boolean getToggleTurbo() {
+        if (firstInput.getRawButtonPressed(9)){
+            turboToggle = !turboToggle;
+        }
+        return turboToggle;
+    }
+
+    Boolean getCargoStart() {
+        if (secondInput.getRawButtonPressed(1)){
+            cargoDepositToggle = true;
+            return true;
+        } else{
+            return false;
+        }
+    }
 
     Double [] drivingJoysticks() {
         Double [] axisVar = new Double[2];
         axisVar[0] = firstInput.getRawAxis(1);
         axisVar[1] = firstInput.getRawAxis(3);
+        axisVar = scaleFactor(axisVar);
         axisVar = deadZone(axisVar);    
         return axisVar;
     }
 
     Double[] deadZone(Double[] in) {
         if (-.09 < in[0] && in[0] < .09) {
-            in[0] = .0;
+            in[0] = 0.0;
         }
         if (-.09 < in[1] && in[1] < .09) {
-            in[1] = .0;
+            in[1] = 0.0;
         }
         return in;
     }
 
+    Double[] scaleFactor(Double[] scale) {
+        scale[0] = 0.8 * Math.pow(scale[0], 3) + 0.2 * scale[0];
+        scale[1] = 0.8 * Math.pow(scale[1], 3) + 0.2 * scale[1];
+        return scale;
+    }
     Boolean turbo() {
 
         boolean turbo = firstInput.getRawButton(6);
@@ -92,16 +116,16 @@ public class InputManager {
         return turbo;
     }
 
-    Boolean getPaid() { // Back Linear Actuator pull in
+    Boolean getPaid() { // Back Linear Actuator
 
-        paid = firstInput.getRawButton(4);
+        paid = firstInput.getRawButton(1);
         
         return paid;
     }
 
-    Boolean getLaid() { // Back Linear Actuator push out
+    Boolean getLaid() { // Back Linear Actuator extends
 
-        laid = firstInput.getRawButton(1);
+        laid = firstInput.getRawButton(7);
         
         return laid;
     }
@@ -113,21 +137,21 @@ public class InputManager {
         return visionButton;
     }
 
-    public boolean getPaidUpFront() {
+    public boolean getPaidUpFront() { //front two darts
 
         paidUpfront = firstInput.getRawButton(2);
 
         return paidUpfront;
     }
 
-    public boolean getLaidUpFront() {
+    public boolean getLaidUpFront() { //front two darts extends
 
-        laidUpfront = firstInput.getRawButton(3);
+        laidUpfront = firstInput.getRawButton(8);
 
         return laidUpfront;
     }
 
-    Boolean getinPoke(){
+    /*Boolean getinPoke(){
 
         inPoke = secondInput.getRawButton(1);
 
@@ -139,7 +163,7 @@ public class InputManager {
         outPoke = secondInput.getRawButton(2);
 
         return outPoke;
-    }
+    }*/
 
     Boolean getBelter() {
 
@@ -157,12 +181,10 @@ public class InputManager {
     
     Double getLift(){
 
-        liftVal = secondInput.getRawAxis(3);
-        //liftVal = Math.signum(((Math.pow(secondInput.getRawAxis(3), 3))*(2/3)));
-        //Math.signum makes it so that any number above 1 will turn into 1 and any number below -1 will turn into -1
-        //secondInput right joystick up down    
+        //liftVal = secondInput.getRawAxis(3);
+        liftVal = ((Math.pow(secondInput.getRawAxis(3), 3))*(2/3));
+
         return liftVal;
     }
 
-    
 }

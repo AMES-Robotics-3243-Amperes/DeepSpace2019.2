@@ -38,6 +38,7 @@ public class Robot extends TimedRobot {
   NetworkTableEntry ty;
   NetworkTableEntry ta;
   NetworkTableEntry tv;
+  NetworkTableEntry da;
   Double[] forward = new Double[2];
   Double[] left = new Double[2];
   Double[] right = new Double[2];
@@ -111,19 +112,33 @@ public class Robot extends TimedRobot {
     double y = ty.getDouble(0.0);
     double v = tv.getDouble(0.0);
     double area = ta.getDouble(0.0);
+    int darty = MC.darty.getValue();
+    int darty2 = MC.darty2.getValue();
+    int darty3 = MC.darty3.getValue();
+    double encodeLefty = MC.leftE.getDistance();
+    double encodeRighty = MC.rightE.getDistance();
 
     SmartDashboard.putNumber("LimelightX", x);
     SmartDashboard.putNumber("LimelightY", y);
     SmartDashboard.putNumber("LimelightArea", area);
     SmartDashboard.putNumber("Limelight Pipeline", (double) pipeline.getNumber(-1));
     SmartDashboard.putNumber("See Light?", v);
+    SmartDashboard.putNumber("Back Dart Value", darty);
+    SmartDashboard.putNumber("Right Dart Value", darty2);
+    SmartDashboard.putNumber("Left Dart Value", darty3);
+    SmartDashboard.putNumber("Left Encoder", encodeLefty);
+    SmartDashboard.putNumber("Right Encoder", encodeRighty);
+    SmartDashboard.putBoolean("Turbo Mode", IM.getToggleTurbo());
+    SmartDashboard.putBoolean("Cargo Mode", IM.cargoDepositToggle);
+    SmartDashboard.putBoolean("Cargo Start", IM.getCargoStart());
 
     MC.setVision(IM.getOrade(), x, v, area);
     MC.setDart(IM.getPaid(), IM.getLaid(), IM.getPaidUpFront(), IM.getLaidUpFront());
     MC.setLift(IM.getLift());
-    MC.setCarMotor(IM.getoutPoke(), IM.getinPoke());
-    MC.drive(IM.drivingJoysticks(), IM.getOrade(), IM.turbo());
+    //MC.setCarMotor(IM.getoutPoke(), IM.getinPoke());
+    MC.drive(IM.drivingJoysticks(), IM.getOrade(), IM.turbo(), IM.getToggleTurbo());
     MC.setBelt(IM.getBelter(), IM.getBeltee());
+    IM.cargoDepositToggle = MC.FIFTYcent(IM.getCargoStart(), IM.cargoDepositToggle);
   }
 
   /**
