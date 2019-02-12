@@ -181,8 +181,8 @@ public class InputManager {
     
     Double getLift(){
 
-        //liftVal = secondInput.getRawAxis(3);
-        liftVal = ((Math.pow(secondInput.getRawAxis(3), 3))*(2/3));
+        liftVal = secondInput.getRawAxis(3);
+        //liftVal = ((Math.pow(secondInput.getRawAxis(3), 3))*(2/3));
 
         return liftVal;
     }
