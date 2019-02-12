@@ -197,6 +197,17 @@ public class MotorController {
             frontPositionR = 3620; // JAMS AT 3770
         }
 
+        if (laidUpfront) {
+            frontPositionL = frontPositionL + 5;
+            frontPositionR = frontPositionR + 5;
+        }
+        if (paidUpfront) {
+            frontPositionL = frontPositionL - 5;
+            frontPositionR = frontPositionR - 5;
+        }
+        if (frontPositionL < 275){
+            frontPositionL = 275;
+        }
         dartPos(backPosition, darty, collectDart, true);
         dartPos(frontPositionR, darty2, collectDart2, false);
         dartPos(frontPositionL, darty3, collectDart3, false);
