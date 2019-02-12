@@ -9,17 +9,17 @@ import edu.wpi.first.wpilibj.Joystick;
     // Left & Right Joysticks (Tank Drive)
     //      Controls the robot's left and right side wheels accordingly.
     //
-    // X Y B A (Climbing Mechanism)
-    //      X - Extends Back DART on Robot
-    //      Y - Retracts Back DART on Robot
-    //      B - Retracts Front 2 DARTs on Robot
-    //      A - Extends Front 2 DARTs on Robot
+    // X A B Y
+    //      X - Vision Button - Uses limelight camera to detect any reflective tape and center on it.
+    //      A - 
+    //      B - 
+    //      Y - 
     //
     // RB (Right Bumper) aka TURBO
     //      Sets Robot speed to 75% for duration the button is pressed.
     //
     // LB (Left Bumper) aka VISION
-    //      Uses limelight camera to detect any reflective tape and center on it.
+    //      
     //
     ///////////////////////////////////////////////
     //
@@ -32,12 +32,12 @@ import edu.wpi.first.wpilibj.Joystick;
     //      Right Stick - Move vertically
     //          Use to move neck up and down to adjust for rocket heights.
     //
-    // X Y B A (Car Wash & ~ )
+    // X A B Y
     //
-    //      X - Collect Ball
-    //      Y - Spit Ball
-    //      B - 
+    //      X - 
     //      A - 
+    //      B - 
+    //      Y - 
     //
     // Left & Right Triggers (Conveyer Belt)
     //
@@ -59,9 +59,6 @@ public class InputManager {
 
     boolean belter = false;
     boolean beltee = false;
-
-    boolean outPoke = false;
-    boolean inPoke = false;
     boolean visionButton = false;
 
     boolean turboToggle = true;
@@ -111,60 +108,48 @@ public class InputManager {
     }
     Boolean turbo() {
 
-        boolean turbo = firstInput.getRawButton(6);
+        boolean turbo = firstInput.getRawButton(8);
          
         return turbo;
     }
 
     Boolean getPaid() { // Back Linear Actuator
 
-        paid = firstInput.getRawButton(1);
+        paid = firstInput.getRawButton(3);
         
         return paid;
     }
 
     Boolean getLaid() { // Back Linear Actuator extends
 
-        laid = firstInput.getRawButton(7);
+        laid = firstInput.getRawButton(6);
         
         return laid;
     }
 
     public boolean getOrade() { //Vision Button
 
-        visionButton = firstInput.getRawButton(5);
+        visionButton = firstInput.getRawButton(1);
 
         return visionButton;
     }
 
     public boolean getPaidUpFront() { //front two darts
 
-        paidUpfront = firstInput.getRawButton(2);
+        paidUpfront = firstInput.getRawButton(5);
 
         return paidUpfront;
     }
 
     public boolean getLaidUpFront() { //front two darts extends
 
-        laidUpfront = firstInput.getRawButton(8);
+        laidUpfront = firstInput.getRawButton(7);
 
         return laidUpfront;
     }
 
-    /*Boolean getinPoke(){
 
-        inPoke = secondInput.getRawButton(1);
-
-        return inPoke;
-    }
-
-    Boolean getoutPoke(){
-
-        outPoke = secondInput.getRawButton(2);
-
-        return outPoke;
-    }*/
-
+    ///////////////////////////////////////////////////SECOND INPUT
     Boolean getBelter() {
 
         belter = secondInput.getRawButton(7);

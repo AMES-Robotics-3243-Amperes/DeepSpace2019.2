@@ -16,6 +16,9 @@ public class MotorController {
     final int DARTMOUTH = 25; // dart min & max deadzone
     final int SLOWDOWN = 350; // slow down +- 500
 
+    int frontPositionL = 275; // JAMS AT 150-
+    int frontPositionR = 369; // JAMS AT 219
+
     BaseMotorController driveM1;
     BaseMotorController driveM2;
     BaseMotorController driveM3;
@@ -182,37 +185,32 @@ public class MotorController {
 
         int backPosition = 270;
         if (laidBack) {
-            backPosition = 3650;
-            
-        } else if(paidBack){ backPosition = 1250;
-            
+            backPosition = 3650;      
         }
-
-        // 100 UNITS = 1/4 INCH
-
-        int frontPositionL = 275; // JAMS AT 150-
-        int frontPositionR = 369; // JAMS AT 219
-        if (laidUpfront) {
-            frontPositionL = 3600; // JAMS AT ABOVE 3650
-            frontPositionR = 3620; // JAMS AT 3770
         }
-
         if (laidUpfront) {
-            frontPositionL = frontPositionL + 5;
-            frontPositionR = frontPositionR + 5;
+            frontPositionL = frontPositionL + 20;
+            frontPositionR = frontPositionR + 20;
         }
         if (paidUpfront) {
-            frontPositionL = frontPositionL - 5;
-            frontPositionR = frontPositionR - 5;
+            frontPositionL = frontPositionL - 20;
+            frontPositionR = frontPositionR - 20;
         }
         if (frontPositionL < 275){
             frontPositionL = 275;
         }
+        if (frontPositionL > 3600){  // JAMS 3650 +
+            frontPositionL = 3600    // JAMS 3770
+        }
+        if (frontPositionR < 369){
+            frontPositionR = 369;
+        }
+        if (frontPositionR > 3620){
+            frontPositionR = 3620;
+        }
         dartPos(backPosition, darty, collectDart, true);
         dartPos(frontPositionR, darty2, collectDart2, false);
         dartPos(frontPositionL, darty3, collectDart3, false);
-        // System.out.println(darty.getValue() + " " + darty2.getValue() + " " +
-        // darty3.getValue());
     }
 
     // For Vision 2019 ~! :D
