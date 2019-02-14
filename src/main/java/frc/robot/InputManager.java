@@ -3,7 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 
     //////////////////////////////////////////////
-    // 
+    // When Mode is Green, Left Joystick switches to D-PAD
     // PRIMARY DRIVER CONTROLS
     //
     // Left & Right Joysticks (Tank Drive)
@@ -65,6 +65,9 @@ public class InputManager {
     boolean cargoDepositToggle = false;
 
     Double liftVal;
+    Double rotateLift;
+
+    boolean lightStatus = false;
 
     Boolean getToggleTurbo() {
         if (firstInput.getRawButtonPressed(9)){
@@ -74,7 +77,7 @@ public class InputManager {
     }
 
     Boolean getCargoStart() {
-        if (secondInput.getRawButtonPressed(1)){
+        if (secondInput.getRawButtonPressed(2)){
             cargoDepositToggle = true;
             return true;
         } else{
@@ -115,7 +118,7 @@ public class InputManager {
 
     Boolean getPaid() { // Back Linear Actuator
 
-        paid = firstInput.getRawButton(3);
+        paid = firstInput.getRawButton(5);
         
         return paid;
     }
@@ -134,20 +137,19 @@ public class InputManager {
         return visionButton;
     }
 
-    public boolean getPaidUpFront() { //front two darts
+    public boolean getPaidUpFront() { //front two darts retracts
 
-        paidUpfront = firstInput.getRawButton(5);
+        paidUpfront = secondInput.getRawButton(1);
 
         return paidUpfront;
     }
 
     public boolean getLaidUpFront() { //front two darts extends
 
-        laidUpfront = firstInput.getRawButton(7);
+        laidUpfront = secondInput.getRawButton(4);
 
         return laidUpfront;
     }
-
 
     ///////////////////////////////////////////////////SECOND INPUT
     Boolean getBelter() {
@@ -165,11 +167,34 @@ public class InputManager {
     }
     
     Double getLift(){
+        if(secondInput.getRawButton(12)){
+            liftVal = -0.22;
+        } else{
+            liftVal = secondInput.getRawAxis(3);
+        }
 
-        liftVal = secondInput.getRawAxis(3);
-        //liftVal = ((Math.pow(secondInput.getRawAxis(3), 3))*(2/3));
+        if (-.09 < liftVal && liftVal < .09) {
+            liftVal = 0.0;
+        }
 
         return liftVal;
     }
+
+    Double getRotateConveyor(){
+
+        rotateLift = secondInput.getRawAxis(1);
+        if (-.09 < rotateLift && rotateLift < .09) {
+            rotateLift = 0.0;
+        }
+
+        return rotateLift;
+    }
+
+    Boolean getGlow() {  //for the lights under the robot
+		if(secondInput.getRawButtonPressed(10)) {
+			lightStatus = !lightStatus;
+		}
+		return lightStatus;
+	}
 
 }

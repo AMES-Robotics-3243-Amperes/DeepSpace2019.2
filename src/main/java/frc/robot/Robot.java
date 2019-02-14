@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
   Double[] forward = new Double[2];
   Double[] left = new Double[2];
   Double[] right = new Double[2];
-  //Boolean compBot = true; // false is practice
+  final boolean compBot = true; // false is practice
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -60,7 +60,7 @@ public class Robot extends TimedRobot {
 
     camMode.setFlags(1);
     pipeline.setNumber(0);
-    MC.setMotorControllers();
+    MC.setMotorControllers(compBot);
   }
 
   /**
@@ -135,10 +135,13 @@ public class Robot extends TimedRobot {
     MC.setVision(IM.getOrade(), x, v, area);
     MC.setDart(IM.getPaid(), IM.getLaid(), IM.getPaidUpFront(), IM.getLaidUpFront());
     MC.setLift(IM.getLift());
+    MC.setRotate(IM.getRotateConveyor());
     //MC.setCarMotor(IM.getoutPoke(), IM.getinPoke());
     MC.drive(IM.drivingJoysticks(), IM.getOrade(), IM.turbo(), IM.getToggleTurbo());
     MC.setBelt(IM.getBelter(), IM.getBeltee());
     IM.cargoDepositToggle = MC.FIFTYcent(IM.getCargoStart(), IM.cargoDepositToggle);
+
+    MC.setGlow(IM.getGlow()); //for the lights under the robot
   }
 
   /**
