@@ -42,6 +42,8 @@ public class Robot extends TimedRobot {
   Double[] forward = new Double[2];
   Double[] left = new Double[2];
   Double[] right = new Double[2];
+  long startTime = 0;
+
   final boolean compBot = true; // false is practice
 
   /**
@@ -57,10 +59,48 @@ public class Robot extends TimedRobot {
     ty = table.getEntry("ty");
     tv = table.getEntry("tv");
     ta = table.getEntry("ta");
-
+    
     camMode.setFlags(1);
     pipeline.setNumber(0);
     MC.setMotorControllers(compBot);
+  }
+
+  public void teleAuto() {
+    double x = tx.getDouble(0.0);
+    double y = ty.getDouble(0.0);
+    double v = tv.getDouble(0.0);
+    double area = ta.getDouble(0.0);
+    double encodeLefty = MC.leftE.getDistance();
+    double encodeRighty = MC.rightE.getDistance();
+    if (IM.getLimeVision()){
+      pipeline.setNumber(0);
+    } else{
+        pipeline.setNumber(7);
+      }
+
+    // post to smart dashboard periodically
+    SmartDashboard.putNumber("LimelightX", x);
+    SmartDashboard.putNumber("LimelightY", y);
+    SmartDashboard.putNumber("LimelightArea", area);
+    SmartDashboard.putNumber("Limelight Pipeline", (double) pipeline.getNumber(-1));
+    SmartDashboard.putNumber("See Light?", v);
+    SmartDashboard.putNumber("Left Encoder", encodeLefty);
+    SmartDashboard.putNumber("Right Encoder", encodeRighty);
+    SmartDashboard.putBoolean("Turbo Mode", IM.getToggleTurbo());
+    SmartDashboard.putBoolean("Cargo Mode", IM.cargoDepositToggle);
+    SmartDashboard.putBoolean("Cargo Start", IM.getCargoStart());
+    
+    MC.setVision(IM.getOrade(), x, v, area);
+    //MC.setDart(IM.getPaid(), IM.getLaid(), IM.getPaidUpFront(), IM.getLaidUpFront());
+    MC.setLift(IM.getLift());
+    MC.setRotate(IM.getRotateConveyor());
+    //MC.setCarMotor(IM.getoutPoke(), IM.getinPoke());
+    MC.drive(IM.drivingJoysticks(), IM.getOrade(), IM.turbo(), IM.getToggleTurbo());
+    MC.setBelt(IM.getBelter(), IM.getBeltee());
+    
+    IM.cargoDepositToggle = MC.FIFTYcent(IM.getCargoStart(), IM.cargoDepositToggle);
+
+    MC.setGlow(IM.getGlow()); //for the lights under the robot
   }
 
   /**
@@ -76,8 +116,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    startTime = 0;
     if (chooser.getSelected() == defaultAuto) {
-
     }
   }
 
@@ -87,15 +127,17 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
 
-    double x = tx.getDouble(0.0);
-    double y = ty.getDouble(0.0);
-    double area = ta.getDouble(0.0);
 
-    // post to smart dashboard periodically
-    SmartDashboard.putNumber("LimelightX", x);
-    SmartDashboard.putNumber("LimelightY", y);
-    SmartDashboard.putNumber("LimelightArea", area);
-
+    if(startTime == 0){
+      startTime = System.currentTimeMillis();
+    }
+    long timeNow = System.currentTimeMillis();
+    timeNow = timeNow - startTime;
+    if(timeNow <= 5000){
+      System.out.println(timeNow);
+    } else {
+      teleAuto();
+    }
   }
 
   /**
@@ -103,45 +145,19 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopInit() {
+    IM.cargoDepositToggle = false;
 
-    // test
   }
 
   public void teleopPeriodic() {
-    double x = tx.getDouble(0.0);
-    double y = ty.getDouble(0.0);
-    double v = tv.getDouble(0.0);
-    double area = ta.getDouble(0.0);
+    teleAuto();
     int darty = MC.darty.getValue();
     int darty2 = MC.darty2.getValue();
     int darty3 = MC.darty3.getValue();
-    double encodeLefty = MC.leftE.getDistance();
-    double encodeRighty = MC.rightE.getDistance();
-
-    SmartDashboard.putNumber("LimelightX", x);
-    SmartDashboard.putNumber("LimelightY", y);
-    SmartDashboard.putNumber("LimelightArea", area);
-    SmartDashboard.putNumber("Limelight Pipeline", (double) pipeline.getNumber(-1));
-    SmartDashboard.putNumber("See Light?", v);
     SmartDashboard.putNumber("Back Dart Value", darty);
     SmartDashboard.putNumber("Right Dart Value", darty2);
     SmartDashboard.putNumber("Left Dart Value", darty3);
-    SmartDashboard.putNumber("Left Encoder", encodeLefty);
-    SmartDashboard.putNumber("Right Encoder", encodeRighty);
-    SmartDashboard.putBoolean("Turbo Mode", IM.getToggleTurbo());
-    SmartDashboard.putBoolean("Cargo Mode", IM.cargoDepositToggle);
-    SmartDashboard.putBoolean("Cargo Start", IM.getCargoStart());
-
-    MC.setVision(IM.getOrade(), x, v, area);
     MC.setDart(IM.getPaid(), IM.getLaid(), IM.getPaidUpFront(), IM.getLaidUpFront());
-    MC.setLift(IM.getLift());
-    MC.setRotate(IM.getRotateConveyor());
-    //MC.setCarMotor(IM.getoutPoke(), IM.getinPoke());
-    MC.drive(IM.drivingJoysticks(), IM.getOrade(), IM.turbo(), IM.getToggleTurbo());
-    MC.setBelt(IM.getBelter(), IM.getBeltee());
-    IM.cargoDepositToggle = MC.FIFTYcent(IM.getCargoStart(), IM.cargoDepositToggle);
-
-    MC.setGlow(IM.getGlow()); //for the lights under the robot
   }
 
   /**

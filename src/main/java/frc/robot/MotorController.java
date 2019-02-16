@@ -18,9 +18,9 @@ public class MotorController {
     final int SLOWDOWN = 100; // slow down +- 500
     final int JOSEPHSABITCH = 35; // josephs a bitch
 
-    int frontPositionL = 275; // JAMS AT 150-
-    int frontPositionR = 369; // JAMS AT 219
-    int backPosition = 270; // JAMS AT ???
+    int frontPositionL = 240; // JAMS AT 150-
+    int frontPositionR = 300; // JAMS AT 219
+    int backPosition = 280; // JAMS AT ???
 
     BaseMotorController driveM1;
     BaseMotorController driveM2;
@@ -36,7 +36,7 @@ public class MotorController {
     AnalogInput darty3 = new AnalogInput(2);
     VictorSP collectDart3 = new VictorSP(5); // left
 
-    VictorSPX rotateBelt = new VictorSPX(11);
+    TalonSRX rotateBelt = new TalonSRX(11);
     VictorSPX carWash1 = new VictorSPX(12);
     //VictorSPX carWash2 = new VictorSPX(12);
     VictorSPX collectorBag = new VictorSPX(4);
@@ -102,37 +102,66 @@ public class MotorController {
         }
     }
 
-    public boolean FIFTYcent(boolean cargoStart, boolean cargoToggle) {
+    public boolean FIFTYcent(boolean cargoStart, boolean cargoToggle) { //For Encoders
         boolean left = false;
         boolean right = false;
+        long startTime = 0;
+
         if (cargoStart) {
             leftE.reset();
             rightE.reset();
+            startTime = 0;
         }
-        if (cargoToggle) {
-            if (leftE.getDistance() < 5) {
-                driveM1.set(ControlMode.PercentOutput, 0.2987);
-                left = true;
-            } else if (leftE.getDistance() > 5.05) {
-                driveM1.set(ControlMode.PercentOutput, -0.15);
-                left = true;
-            } else {
-                driveM1.set(ControlMode.PercentOutput, 0.0);
+
+        if(startTime == 0){
+            startTime = System.currentTimeMillis();
+          }
+          long timeNow = System.currentTimeMillis();
+          timeNow = timeNow - startTime;
+          if(timeNow <= 2000){
+            if (cargoToggle) {
+                if (leftE.getDistance() < 1.8) {
+                    if (rightE.getDistance() - leftE.getDistance() >= 0.1){
+                        driveM1.set(ControlMode.PercentOutput, 0.225);
+                    } else{
+                        driveM1.set(ControlMode.PercentOutput, 0.18);
+                    }
+                     left = true;
+                } else if (leftE.getDistance() > 1.9) {
+                    driveM1.set(ControlMode.PercentOutput, -0.15);
+                    left = true;
+                } else {
+                    driveM1.set(ControlMode.PercentOutput, 0.0);
+                    left = false;
+                }
+    
+                if (rightE.getDistance() < 1.8) {
+                    if (leftE.getDistance() - rightE.getDistance() >= 0.1){
+                        driveM2.set(ControlMode.PercentOutput, -0.225);
+                    } else{
+                        driveM2.set(ControlMode.PercentOutput, -0.18);
+                    } 
+                    right = true;
+                } else if (rightE.getDistance() > 1.9) {
+                    driveM2.set(ControlMode.PercentOutput, 0.15);
+                    right = true;
+                } else {
+                    driveM2.set(ControlMode.PercentOutput, 0.0);
+                    right = false;
+                }
+            }
+            System.out.println(rightE.getDistance() - leftE.getDistance());
+            if(!left && !right){
                 leftE.reset();
-                left = false;
-            }
-            if (rightE.getDistance() < 5) {
-                driveM2.set(ControlMode.PercentOutput, -0.2987);
-                right = true;
-            } else if (rightE.getDistance() > 5.05) {
-                driveM2.set(ControlMode.PercentOutput, 0.15);
-                right = true;
-            } else {
-                driveM2.set(ControlMode.PercentOutput, 0.0);
                 rightE.reset();
-                right = false;
             }
+          } else {
+            driveM1.set(ControlMode.PercentOutput, 0.0);
+            driveM2.set(ControlMode.PercentOutput, 0.0);
+            left = false;
+            right = false;
         }
+
         return left || right; // returns true when either left OR right is set to true and when both are true.
                               // returns false when both are false.
     }
@@ -150,9 +179,11 @@ public class MotorController {
             gearBox2.follow(gearBox1);
         }
     }
-    public void setRotate(Double val) { // rotate conveyor belt
+    public void setRotate(Double val /*, boolean limitSwitchDisableNeutralOnLOS, int timeoutMs*/) { // rotates conveyor belt up or down
         if(val > 0){
-            rotateBelt.set(ControlMode.PercentOutput, val * 0.35);
+            rotateBelt.set(ControlMode.PercentOutput, val * 0.75);
+            //rotateBelt.configLimitSwitchDisableNeutralOnLOS(limitSwitchDisableNeutralOnLOS, timeoutMs);
+            //The above code was research on how to use limit switches that is built into the TalonSRX
         } else if(val < 0){
             rotateBelt.set(ControlMode.PercentOutput, val * 0.75);
         } else {
@@ -229,20 +260,20 @@ public class MotorController {
             frontPositionL = frontPositionL - JOSEPHSABITCH;
             frontPositionR = frontPositionR - JOSEPHSABITCH;
         }
-        if (frontPositionL < 275){
-            frontPositionL = 275;
+        if (frontPositionL < 240){
+            frontPositionL = 240;
         }
         if (frontPositionL > 3600){  // JAMS 3650 +
             frontPositionL = 3600;    // JAMS 3770
         }
-        if (frontPositionR < 369){
-            frontPositionR = 369;
+        if (frontPositionR < 300){
+            frontPositionR = 300;
         }
         if (frontPositionR > 3620){
             frontPositionR = 3620;
         }
-        if (backPosition < 270){
-            backPosition = 270;
+        if (backPosition < 280){
+            backPosition = 280;
         }
         if (backPosition > 3650){
             backPosition = 3650;
@@ -258,7 +289,7 @@ public class MotorController {
         float KpSteering = 0.00002f;
         float KpSteering2 = 0.02f;
         float KpDistance = 0.01f;
-        float KpDistance2 = 0.16f;
+        float KpDistance2 = 0.2f;
         float min_command = 0.05f;
         float refArea = 2.25f;
 

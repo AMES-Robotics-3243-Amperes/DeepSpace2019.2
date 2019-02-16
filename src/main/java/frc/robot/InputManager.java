@@ -61,6 +61,7 @@ public class InputManager {
     boolean beltee = false;
     boolean visionButton = false;
 
+    boolean limeVision = true;
     boolean turboToggle = true;
     boolean cargoDepositToggle = false;
 
@@ -76,11 +77,19 @@ public class InputManager {
         return turboToggle;
     }
 
+    Boolean getLimeVision() {
+        if (firstInput.getRawButtonPressed(10)){
+            limeVision = !limeVision;
+            }
+        return limeVision;
+    }
+
     Boolean getCargoStart() {
         if (secondInput.getRawButtonPressed(2)){
             cargoDepositToggle = true;
             return true;
         } else{
+            
             return false;
         }
     }
