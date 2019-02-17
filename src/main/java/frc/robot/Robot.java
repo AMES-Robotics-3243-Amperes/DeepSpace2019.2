@@ -17,6 +17,8 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -127,13 +129,14 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
 
-
     if(startTime == 0){
       startTime = System.currentTimeMillis();
     }
     long timeNow = System.currentTimeMillis();
     timeNow = timeNow - startTime;
-    if(timeNow <= 5000){
+    if(timeNow <= 900){
+      MC.driveM1.set(ControlMode.PercentOutput, -0.9);
+      MC.driveM2.set(ControlMode.PercentOutput, 0.9);
       System.out.println(timeNow);
     } else {
       teleAuto();
@@ -157,7 +160,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Back Dart Value", darty);
     SmartDashboard.putNumber("Right Dart Value", darty2);
     SmartDashboard.putNumber("Left Dart Value", darty3);
-    MC.setDart(IM.getPaid(), IM.getLaid(), IM.getPaidUpFront(), IM.getLaidUpFront());
+    MC.setDart(IM.getPaid(), IM.getLaid(), IM.getPaidUpFront(), IM.getLaidUpFront(), IM.getGlow());
   }
 
   /**

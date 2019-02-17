@@ -15,11 +15,16 @@ import edu.wpi.first.wpilibj.Joystick;
     //      B - 
     //      Y - 
     //
-    // RB (Right Bumper) aka TURBO
+    // RT (Right Trigger) aka TURBO
     //      Sets Robot speed to 75% for duration the button is pressed.
+    // LT (Left Trigger)
     //
-    // LB (Left Bumper) aka VISION
+    // LB (Left Bumper) - Back Dart Retract
+    // RB (Right Bumper) - Back Dart Extend
     //      
+    // Back Button - Turbo Toggle
+    //
+    // Start Button - Limelight Pipeline
     //
     ///////////////////////////////////////////////
     //
@@ -27,23 +32,27 @@ import edu.wpi.first.wpilibj.Joystick;
     //
     // Joysticks
     //
-    //      Left Stick -
+    //      Left Stick - Snow blower
     //
     //      Right Stick - Move vertically
-    //          Use to move neck up and down to adjust for rocket heights.
+    //          Use to move neck (lifter) up and down to adjust for rocket heights.
+    //          
+    //      Right Stick Button - Stops the lifter from moving up or down
     //
     // X A B Y
     //
-    //      X - 
-    //      A - 
+    //      X - Retracts Front Darts
+    //      A - Cargo Start True/False
     //      B - 
-    //      Y - 
+    //      Y - Extends Front Darts
     //
     // Left & Right Triggers (Conveyer Belt)
     //
-    //      LT - Conveyer Counter-Clockwise
+    //      LT - Conveyer Counter-Clockwise (Intakes)
     //
-    //      RT - Conveyer Clockwise
+    //      RT - Conveyer Clockwise (Spits out)
+    //
+    // Start Button - Turns on Under Glow Lights
     //
     /////////////////////////////
 
@@ -89,7 +98,7 @@ public class InputManager {
             cargoDepositToggle = true;
             return true;
         } else{
-            
+
             return false;
         }
     }
@@ -125,7 +134,7 @@ public class InputManager {
         return turbo;
     }
 
-    Boolean getPaid() { // Back Linear Actuator
+    Boolean getPaid() { // Back Linear Actuator retract
 
         paid = firstInput.getRawButton(5);
         
@@ -161,14 +170,14 @@ public class InputManager {
     }
 
     ///////////////////////////////////////////////////SECOND INPUT
-    Boolean getBelter() {
+    Boolean getBelter() {   // Intakes the Cargo
 
         belter = secondInput.getRawButton(7);
 
         return belter;
     }
 
-    Boolean getBeltee() {
+    Boolean getBeltee() {   // Spits out the Cargo
 
         beltee = secondInput.getRawButton(8);
 
@@ -199,11 +208,19 @@ public class InputManager {
         return rotateLift;
     }
 
-    Boolean getGlow() {  //for the lights under the robot
+    /*Boolean getGlow() {  //for the lights under the robot
 		if(secondInput.getRawButtonPressed(10)) {
 			lightStatus = !lightStatus;
 		}
 		return lightStatus;
-	}
+    }*/
+    
+    Boolean getGlow() {
+        
+        lightStatus = secondInput.getRawButton(10);
+
+        return lightStatus;
+
+    }
 
 }
