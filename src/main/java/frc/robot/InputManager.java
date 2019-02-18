@@ -17,14 +17,14 @@ import edu.wpi.first.wpilibj.Joystick;
     //
     // RT (Right Trigger) aka TURBO
     //      Sets Robot speed to 75% for duration the button is pressed.
-    // LT (Left Trigger)
+    // LT (Left Trigger) -
     //
     // LB (Left Bumper) - Back Dart Retract
     // RB (Right Bumper) - Back Dart Extend
     //      
     // Back Button - Turbo Toggle
     //
-    // Start Button - Limelight Pipeline
+    // Start Button - Switches Limelight between Vision & Targeting
     //
     ///////////////////////////////////////////////
     //
@@ -32,9 +32,9 @@ import edu.wpi.first.wpilibj.Joystick;
     //
     // Joysticks
     //
-    //      Left Stick - Snow blower
+    //      Left Stick - Folds or Releases Conveyor Belt
     //
-    //      Right Stick - Move vertically
+    //      Right Stick - (Move Vertically)
     //          Use to move neck (lifter) up and down to adjust for rocket heights.
     //          
     //      Right Stick Button - Stops the lifter from moving up or down
@@ -42,10 +42,10 @@ import edu.wpi.first.wpilibj.Joystick;
     // X A B Y
     //
     //      X - Retracts Front Darts
-    //      A - Cargo Start True/False
-    //      B - 
     //      Y - Extends Front Darts
-    //
+    //      B - 
+    //      A - Triggers Encoder Method (Move Forward 18 CM) 
+    //      
     // Left & Right Triggers (Conveyer Belt)
     //
     //      LT - Conveyer Counter-Clockwise (Intakes)

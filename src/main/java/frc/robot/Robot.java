@@ -93,10 +93,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Cargo Start", IM.getCargoStart());
     
     MC.setVision(IM.getOrade(), x, v, area);
-    //MC.setDart(IM.getPaid(), IM.getLaid(), IM.getPaidUpFront(), IM.getLaidUpFront());
     MC.setLift(IM.getLift());
     MC.setRotate(IM.getRotateConveyor());
-    //MC.setCarMotor(IM.getoutPoke(), IM.getinPoke());
     MC.drive(IM.drivingJoysticks(), IM.getOrade(), IM.turbo(), IM.getToggleTurbo());
     MC.setBelt(IM.getBelter(), IM.getBeltee());
     
@@ -149,7 +147,6 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     IM.cargoDepositToggle = false;
-
   }
 
   public void teleopPeriodic() {

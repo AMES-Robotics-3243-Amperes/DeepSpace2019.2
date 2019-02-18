@@ -16,13 +16,13 @@ public class MotorController {
     // final means it becomes a constant
     final int DARTMOUTH = 15; // dart min & max deadzone
     final int SLOWDOWN = 85; // slow down +- 500
-    final int JOSEPHSABITCH = 35; // josephs a bitch
+    final int EXTEEEND = 35; // rate of darts extension
 
     int frontPositionL = 240; // JAMS AT 150-
     int frontPositionR = 300; // JAMS AT 219
     int backPosition = 275; // JAMS AT ???
 
-    //long startTime = 0; // for Timer in Encoders
+    long startTime = 0; // for Timer in Encoders
 
     BaseMotorController driveM1;
     BaseMotorController driveM2;
@@ -48,21 +48,6 @@ public class MotorController {
     Encoder rightE = new Encoder(0, 1, false, EncodingType.k4X);
 
     DigitalOutput underGlow = new DigitalOutput(7); // for the lights under the robot
-    // DigitalOutput conveyorRestrict = new DigitalOutput()
-
-    // Encoders:
-    // 1, 2, 3, & 4 are the ports in the roboRIO. They are digital input values
-    // True/false tells whether the encoder will reverse the counting direction or
-    // not. True inverts and false does not.
-    // EncodingType.k4X shows the type of encoder we are using. It means that the
-    // encoder has 4X accuracy.
-
-    // 2 car wash motors: just like cim motors (kinda like cube collector from last
-    // year) motor type similar to bag motor
-    // 3 linear actuator: use buttons to push out (increase numbers) and push in
-    // (decrease numbers) 3 mini cims
-    // collector: controls conveyor belt 1 Bag motor(?) controls it
-    // gearbox: wraps up rope on a spool. Powered by two mini cims
 
     public void setMotorControllers(boolean compBot) { // initialization for drive objects and gearbox2 following
         if (compBot == true) {
@@ -111,12 +96,13 @@ public class MotorController {
         if (cargoStart) {
             leftE.reset();
             rightE.reset();
-            //startTime = System.currentTimeMillis();
+            startTime = System.currentTimeMillis();
         }
 
-        //long timeNow = System.currentTimeMillis();
-        //timeNow = timeNow - startTime;
-        if (cargoToggle /*&& timeNow <= 2000*/) {
+        long timeNow = System.currentTimeMillis();
+        timeNow = timeNow - startTime;
+        System.out.println(timeNow);
+        if (cargoToggle && timeNow <= 2000) {
             if (leftE.getDistance() < 1.8) {
                 if (rightE.getDistance() - leftE.getDistance() >= 0.1) {
                     driveM1.set(ControlMode.PercentOutput, 0.225);
@@ -151,7 +137,7 @@ public class MotorController {
                 leftE.reset();
                 rightE.reset();
             }
-        } else if (cargoToggle /*&& timeNow >= 2000*/) {
+        } else if (cargoToggle && timeNow >= 2000) {
             driveM1.set(ControlMode.PercentOutput, 0.0);
             driveM2.set(ControlMode.PercentOutput, 0.0);
             left = false;
@@ -189,19 +175,6 @@ public class MotorController {
             rotateBelt.set(ControlMode.PercentOutput, val * 0.75);
         } else {
             rotateBelt.set(ControlMode.PercentOutput, 0.0);
-        }
-    }
-
-    public void setCarMotor(Boolean outPoke, Boolean inPoke) { // for ball intake
-        if (outPoke == true && !inPoke) {
-            carWash1.set(ControlMode.PercentOutput, 0.75);
-            // carWash2.set(ControlMode.PercentOutput, -0.75);
-        } else if (!outPoke && inPoke == true) {
-            carWash1.set(ControlMode.PercentOutput, -0.75);
-            // carWash2.set(ControlMode.PercentOutput, 0.75);
-        } else {
-            carWash1.set(ControlMode.PercentOutput, 0.0);
-            // carWash2.set(ControlMode.PercentOutput, 0.0);
         }
     }
 
@@ -249,18 +222,18 @@ public class MotorController {
                                                                                                         // darts
 
         if (paidBack) {
-            backPosition = backPosition - JOSEPHSABITCH;
+            backPosition = backPosition - EXTEEEND;
         }
         if (laidBack) {
-            backPosition = backPosition + JOSEPHSABITCH;
+            backPosition = backPosition + EXTEEEND;
         }
         if (laidUpfront) {
-            frontPositionL = frontPositionL + JOSEPHSABITCH;
-            frontPositionR = frontPositionR + JOSEPHSABITCH;
+            frontPositionL = frontPositionL + EXTEEEND;
+            frontPositionR = frontPositionR + EXTEEEND;
         }
         if (paidUpfront) {
-            frontPositionL = frontPositionL - JOSEPHSABITCH;
-            frontPositionR = frontPositionR - JOSEPHSABITCH;
+            frontPositionL = frontPositionL - EXTEEEND;
+            frontPositionR = frontPositionR - EXTEEEND;
         }
         if (frontPositionL < 240) {
             frontPositionL = 240;
