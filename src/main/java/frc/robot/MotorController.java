@@ -77,7 +77,7 @@ public class MotorController {
 
     public void setCamera(int moveCam){
         if(moveCam == 180){
-            cameraTop.setAngle(0); //test out with servo motor to find correct angles!!
+            cameraTop.setAngle(15); //test out with servo motor to find correct angles!!
         } else if(moveCam == 0){
             cameraTop.setAngle(90);
         } else{

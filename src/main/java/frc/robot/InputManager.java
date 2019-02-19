@@ -44,8 +44,10 @@ import edu.wpi.first.wpilibj.Joystick;
     //      X - Retracts Front Darts
     //      Y - Extends Front Darts
     //      B - 
-    //      A - Triggers Encoder Method (Move Forward 18 CM) 
+    //      A - 
     //      
+    // Left Bumper - Triggers Encoder Method (Move Forward 18 CM) 
+    //
     // Left & Right Triggers (Conveyer Belt)
     //
     //      LT - Conveyer Counter-Clockwise (Intakes)
@@ -96,11 +98,10 @@ public class InputManager {
     }
 
     Boolean getCargoStart() {
-        if (secondInput.getRawButtonPressed(2)){
+        if (secondInput.getRawButtonPressed(5)){
             cargoDepositToggle = true;
             return true;
         } else{
-            secondInput.getPOV();
             return false;
         }
     }
