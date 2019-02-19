@@ -61,6 +61,8 @@ public class InputManager {
     Joystick firstInput = new Joystick(0);
     Joystick secondInput = new Joystick(1);
 
+    int cameraTop = 0;
+
     boolean paid = false;
     boolean laid = false;
     boolean paidUpfront = false;
@@ -98,7 +100,7 @@ public class InputManager {
             cargoDepositToggle = true;
             return true;
         } else{
-
+            secondInput.getPOV();
             return false;
         }
     }
@@ -170,6 +172,11 @@ public class InputManager {
     }
 
     ///////////////////////////////////////////////////SECOND INPUT
+
+    public int getCamera(){
+        return secondInput.getPOV();
+    }
+
     Boolean getBelter() {   // Intakes the Cargo
 
         belter = secondInput.getRawButton(7);

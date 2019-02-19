@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.Servo;
 
 import com.ctre.phoenix.ILoopable;
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -38,12 +39,15 @@ public class MotorController {
     AnalogInput darty3 = new AnalogInput(2);
     VictorSP collectDart3 = new VictorSP(5); // left
 
+    Servo cameraTop = new Servo(2); //change num later
+
     VictorSPX rotateBelt = new VictorSPX(11);
-    VictorSPX carWash1 = new VictorSPX(12);
-    // VictorSPX carWash2 = new VictorSPX(12);
     VictorSPX collectorBag = new VictorSPX(4);
     VictorSPX gearBox1 = new VictorSPX(1);
     VictorSPX gearBox2 = new VictorSPX(2);
+    //VictorSPX carWash1 = new VictorSPX(12);
+    //VictorSPX carWash2 = new VictorSPX(12);
+
     Encoder leftE = new Encoder(3, 4, false, EncodingType.k4X);
     Encoder rightE = new Encoder(0, 1, false, EncodingType.k4X);
 
@@ -69,6 +73,16 @@ public class MotorController {
         leftE.setDistancePerPulse(1.0 / 76.25);
         rightE.setDistancePerPulse(1.0 / 76.25); // 1.0/76.25 shows that there is 10 cm for every 76.25 pulses in the
                                                  // encoder
+    }
+
+    public void setCamera(int moveCam){
+        if(moveCam == 180){
+            cameraTop.setAngle(0); //test out with servo motor to find correct angles!!
+        } else if(moveCam == 0){
+            cameraTop.setAngle(90);
+        } else{
+            cameraTop.setAngle(50);
+        }
     }
 
     public void drive(Double[] driveSpeed, boolean Vision, boolean turbo, boolean turboMode) { // for driving
@@ -97,11 +111,12 @@ public class MotorController {
             leftE.reset();
             rightE.reset();
             startTime = System.currentTimeMillis();
+            //System.out.println("START: " + startTime);
         }
 
         long timeNow = System.currentTimeMillis();
         timeNow = timeNow - startTime;
-        System.out.println(timeNow);
+        //System.out.println(timeNow);
         if (cargoToggle && timeNow <= 2000) {
             if (leftE.getDistance() < 1.8) {
                 if (rightE.getDistance() - leftE.getDistance() >= 0.1) {
@@ -132,7 +147,7 @@ public class MotorController {
                 driveM2.set(ControlMode.PercentOutput, 0.0);
                 right = false;
             }
-            System.out.println(rightE.getDistance() - leftE.getDistance());
+            //System.out.println(rightE.getDistance() - leftE.getDistance());
             if (!left && !right) {
                 leftE.reset();
                 rightE.reset();
@@ -189,11 +204,11 @@ public class MotorController {
         }
     }
 
-    public void dartPos(int Position, AnalogInput input, VictorSP dartM, boolean isBackdart, boolean underGlow) {
+    public void dartPos(int Position, AnalogInput input, VictorSP dartM, boolean isBackdart) {
 
-        if (input.getValue() < Position + DARTMOUTH && input.getValue() > Position - DARTMOUTH && underGlow == true) {
+        if (input.getValue() < Position + DARTMOUTH && input.getValue() > Position - DARTMOUTH) {
             dartM.set(0.0);
-        } else if (input.getValue() > Position && underGlow == false) {
+        } else if (input.getValue() > Position) {
             if (input.getValue() > Position + SLOWDOWN) {
                 if (isBackdart)
                     dartM.set(-0.8);
@@ -203,7 +218,7 @@ public class MotorController {
             } else {
                 dartM.set(-0.25);
             }
-        } else if (input.getValue() < Position && underGlow == false) {
+        } else if (input.getValue() < Position) {
             if (input.getValue() < Position - SLOWDOWN) {
                 if (isBackdart)
                     dartM.set(0.85);
@@ -218,22 +233,26 @@ public class MotorController {
         }
     }
 
-    public void setDart(Boolean paidBack, Boolean laidBack, Boolean paidUpfront, Boolean laidUpfront, Boolean underGlow) { // for all three
+    public Boolean setDart(Boolean paidBack, Boolean laidBack, Boolean paidUpfront, Boolean laidUpfront, Boolean underGlow) { // for all three
                                                                                                         // darts
 
         if (paidBack) {
             backPosition = backPosition - EXTEEEND;
+            underGlow = false;
         }
         if (laidBack) {
             backPosition = backPosition + EXTEEEND;
+            underGlow = false;
         }
         if (laidUpfront) {
             frontPositionL = frontPositionL + EXTEEEND;
             frontPositionR = frontPositionR + EXTEEEND;
+            underGlow = false;
         }
         if (paidUpfront) {
             frontPositionL = frontPositionL - EXTEEEND;
             frontPositionR = frontPositionR - EXTEEEND;
+            underGlow = false;
         }
         if (frontPositionL < 240) {
             frontPositionL = 240;
@@ -254,9 +273,11 @@ public class MotorController {
             backPosition = 3650;
         }
 
-        dartPos(backPosition, darty, collectDart, true, underGlow);
-        dartPos(frontPositionR, darty2, collectDart2, false, underGlow);
-        dartPos(frontPositionL, darty3, collectDart3, false, underGlow);
+        dartPos(backPosition, darty, collectDart, true);
+        dartPos(frontPositionR, darty2, collectDart2, false);
+        dartPos(frontPositionL, darty3, collectDart3, false);
+        
+        return underGlow;
     }
 
     // For Vision 2019 ~! :D

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,9 +31,11 @@ public class Robot extends TimedRobot {
   final String defaultAuto = "Default";
   final String customAuto = "My Auto";
   String autoSelected;
-  SendableChooser<String> chooser = new SendableChooser<>();
+  SendableChooser<Boolean> chooser = new SendableChooser<>();
+
   InputManager IM = new InputManager();
   MotorController MC = new MotorController();
+
   NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
   NetworkTableEntry camMode;
   NetworkTableEntry pipeline;
@@ -41,9 +44,11 @@ public class Robot extends TimedRobot {
   NetworkTableEntry ta;
   NetworkTableEntry tv;
   NetworkTableEntry da;
+
   Double[] forward = new Double[2];
   Double[] left = new Double[2];
   Double[] right = new Double[2];
+
   long startTime = 0;
 
   final boolean compBot = true; // false is practice
@@ -61,7 +66,10 @@ public class Robot extends TimedRobot {
     ty = table.getEntry("ty");
     tv = table.getEntry("tv");
     ta = table.getEntry("ta");
-    
+
+    chooser.addDefault(defaultAuto, new Boolean(true));
+    chooser.addObject(customAuto, new Boolean(false));
+
     camMode.setFlags(1);
     pipeline.setNumber(0);
     MC.setMotorControllers(compBot);
@@ -74,6 +82,8 @@ public class Robot extends TimedRobot {
     double area = ta.getDouble(0.0);
     double encodeLefty = MC.leftE.getDistance();
     double encodeRighty = MC.rightE.getDistance();
+    boolean cargoStart = IM.getCargoStart();
+
     if (IM.getLimeVision()){
       pipeline.setNumber(0);
     } else{
@@ -90,15 +100,18 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Right Encoder", encodeRighty);
     SmartDashboard.putBoolean("Turbo Mode", IM.getToggleTurbo());
     SmartDashboard.putBoolean("Cargo Mode", IM.cargoDepositToggle);
-    SmartDashboard.putBoolean("Cargo Start", IM.getCargoStart());
-    
+    SmartDashboard.putBoolean("Cargo Start", cargoStart);
+    SmartDashboard.putData("Default Auto", chooser);
+
     MC.setVision(IM.getOrade(), x, v, area);
     MC.setLift(IM.getLift());
     MC.setRotate(IM.getRotateConveyor());
     MC.drive(IM.drivingJoysticks(), IM.getOrade(), IM.turbo(), IM.getToggleTurbo());
     MC.setBelt(IM.getBelter(), IM.getBeltee());
     
-    IM.cargoDepositToggle = MC.FIFTYcent(IM.getCargoStart(), IM.cargoDepositToggle);
+    IM.cargoDepositToggle = MC.FIFTYcent(cargoStart, IM.cargoDepositToggle);
+
+    MC.setCamera(IM.getCamera());
 
     MC.setGlow(IM.getGlow()); //for the lights under the robot
   }
@@ -117,8 +130,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     startTime = 0;
-    if (chooser.getSelected() == defaultAuto) {
-    }
   }
 
   /**
@@ -132,7 +143,7 @@ public class Robot extends TimedRobot {
     }
     long timeNow = System.currentTimeMillis();
     timeNow = timeNow - startTime;
-    if(timeNow <= 900){
+    if(timeNow <= 900 && chooser.getSelected()){
       MC.driveM1.set(ControlMode.PercentOutput, -0.9);
       MC.driveM2.set(ControlMode.PercentOutput, 0.9);
       System.out.println(timeNow);
@@ -157,7 +168,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Back Dart Value", darty);
     SmartDashboard.putNumber("Right Dart Value", darty2);
     SmartDashboard.putNumber("Left Dart Value", darty3);
-    MC.setDart(IM.getPaid(), IM.getLaid(), IM.getPaidUpFront(), IM.getLaidUpFront(), IM.getGlow());
+
+    IM.lightStatus = MC.setDart(IM.getPaid(), IM.getLaid(), IM.getPaidUpFront(), IM.getLaidUpFront(), IM.getGlow());
   }
 
   /**
