@@ -345,12 +345,4 @@ public class MotorController {
         underGlow.set(input);
     }*/
 
-    public void setGlow(boolean light) {
-        if(light){
-            underGlow.set(true);
-        } else{
-            underGlow.set(false);
-        }
-        }
-
 }

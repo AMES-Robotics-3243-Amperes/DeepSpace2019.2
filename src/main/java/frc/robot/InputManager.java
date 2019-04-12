@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.DigitalInput;
 
     //////////////////////////////////////////////
     // When Mode is Green, Left Joystick switches to D-PAD
@@ -81,7 +82,8 @@ public class InputManager {
     Double liftVal;
     Double rotateLift;
 
-    boolean lightStatus = false;
+    boolean limitStatus = false;
+    DigitalInput limitSwitch = new DigitalInput(0);
 
     Boolean getToggleTurbo() {
         if (firstInput.getRawButtonPressed(9)){
@@ -223,11 +225,9 @@ public class InputManager {
 		return lightStatus;
     }*/
     
-    Boolean getGlow() {
-        
-        lightStatus = secondInput.getRawButton(10);
+    Boolean getLimit() {
 
-        return lightStatus;
+        return limitSwitch.get();
 
     }
 

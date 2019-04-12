@@ -51,7 +51,7 @@ public class Robot extends TimedRobot {
 
   long startTime = 0;
 
-  final boolean compBot = true; // false is practice
+  final boolean compBot = false; // false is practice
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -102,6 +102,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Cargo Mode", IM.cargoDepositToggle);
     SmartDashboard.putBoolean("Cargo Start", cargoStart);
     SmartDashboard.putData("Default Auto", chooser);
+    SmartDashboard.putBoolean("limit pressed?", IM.getLimit());
 
     MC.setVision(IM.getOrade(), x, v, area);
     MC.setLift(IM.getLift());
@@ -113,7 +114,6 @@ public class Robot extends TimedRobot {
 
     MC.setCamera(IM.getCamera());
 
-    MC.setGlow(IM.getGlow()); //for the lights under the robot
   }
 
   /**
@@ -169,7 +169,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Right Dart Value", darty2);
     SmartDashboard.putNumber("Left Dart Value", darty3);
 
-    IM.lightStatus = MC.setDart(IM.getPaid(), IM.getLaid(), IM.getPaidUpFront(), IM.getLaidUpFront(), IM.getGlow());
+    MC.setDart(IM.getPaid(), IM.getLaid(), IM.getPaidUpFront(), IM.getLaidUpFront(), false);
   }
 
   /**
