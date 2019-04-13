@@ -59,7 +59,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-
+    IM.IMinit();
     camMode = table.getEntry("camMode");
     pipeline = table.getEntry("pipeline");
     tx = table.getEntry("tx");
@@ -168,8 +168,11 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Back Dart Value", darty);
     SmartDashboard.putNumber("Right Dart Value", darty2);
     SmartDashboard.putNumber("Left Dart Value", darty3);
+    SmartDashboard.putBoolean("limit pressed?", IM.getLimit());
+    SmartDashboard.putBoolean("back extended completely?", IM.readHallBottom());
+    SmartDashboard.putBoolean("back retracted completely?", IM.readHallTop());
 
-    MC.setDart(IM.getPaid(), IM.getLaid(), IM.getPaidUpFront(), IM.getLaidUpFront(), false);
+    MC.setDart(IM.getPaid(), IM.getLaid(), IM.getPaidUpFront(), IM.getLaidUpFront(), IM.readHallTop(), IM.readHallBottom());
   }
 
   /**

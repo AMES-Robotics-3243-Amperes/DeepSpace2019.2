@@ -83,8 +83,16 @@ public class InputManager {
     Double rotateLift;
 
     boolean limitStatus = false;
-    DigitalInput limitSwitch = new DigitalInput(0);
+    DigitalInput limitSwitch;
 
+    DigitalInput hallTop;
+    DigitalInput hallBottom;
+    
+    public void IMinit(){
+        limitSwitch = new DigitalInput(5);
+        hallTop = new DigitalInput(8);
+        hallBottom = new DigitalInput(9);
+    }
     Boolean getToggleTurbo() {
         if (firstInput.getRawButtonPressed(9)){
             turboToggle = !turboToggle;
@@ -139,6 +147,14 @@ public class InputManager {
         return turbo;
     }
 
+    Boolean readHallTop() { //
+
+        return hallTop.get();
+    }
+    Boolean readHallBottom() { //
+    
+        return hallBottom.get();
+    }
     Boolean getPaid() { // Back Linear Actuator retract
 
         paid = firstInput.getRawButton(5);

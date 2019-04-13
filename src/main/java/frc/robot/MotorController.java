@@ -204,6 +204,16 @@ public class MotorController {
         }
     }
 
+    public void backDartPos(boolean Top, boolean Bottom, boolean Extend, boolean Retract) { 
+        if (Bottom == false && Extend == true){
+            collectDart.set(1);
+        } else if (Top == false && Retract == true){
+            collectDart.set(-1);
+        } else {
+            collectDart.set(0);
+        }
+
+    }
     public void dartPos(int Position, AnalogInput input, VictorSP dartM, boolean isBackdart) {
 
         if (input.getValue() < Position + DARTMOUTH && input.getValue() > Position - DARTMOUTH) {
@@ -233,26 +243,22 @@ public class MotorController {
         }
     }
 
-    public Boolean setDart(Boolean paidBack, Boolean laidBack, Boolean paidUpfront, Boolean laidUpfront, Boolean underGlow) { // for all three
+    public void setDart(Boolean paidBack, Boolean laidBack, Boolean paidUpfront, Boolean laidUpfront, Boolean hallTop, Boolean hallBottom) { // for all three
                                                                                                         // darts
 
         if (paidBack) {
             backPosition = backPosition - EXTEEEND;
-            underGlow = false;
         }
         if (laidBack) {
             backPosition = backPosition + EXTEEEND;
-            underGlow = false;
         }
         if (laidUpfront) {
             frontPositionL = frontPositionL + EXTEEEND;
             frontPositionR = frontPositionR + EXTEEEND;
-            underGlow = false;
         }
         if (paidUpfront) {
             frontPositionL = frontPositionL - EXTEEEND;
             frontPositionR = frontPositionR - EXTEEEND;
-            underGlow = false;
         }
         if (frontPositionL < 240) {
             frontPositionL = 240;
@@ -273,11 +279,11 @@ public class MotorController {
             backPosition = 3650;
         }
 
-        dartPos(backPosition, darty, collectDart, true);
+        //dartPos(backPosition, darty, collectDart, true);
+        backDartPos(hallTop, hallBottom, laidBack, paidBack);
         dartPos(frontPositionR, darty2, collectDart2, false);
         dartPos(frontPositionL, darty3, collectDart3, false);
         
-        return underGlow;
     }
 
     // For Vision 2019 ~! :D
