@@ -52,6 +52,7 @@ public class MotorController {
     Encoder rightE = new Encoder(0, 1, false, EncodingType.k4X);
 
     DigitalOutput underGlow = new DigitalOutput(7); // for the lights under the robot
+    DigitalOutput limitBelt = new DigitalOutput(5); // limit switch on conveyor belt
 
     public void setMotorControllers(boolean compBot) { // initialization for drive objects and gearbox2 following
         if (compBot == true) {
@@ -177,21 +178,42 @@ public class MotorController {
         }
     }
 
-    public void setRotate(Double val /* , boolean limitSwitchDisableNeutralOnLOS, int timeoutMs */) { // rotates
+    public void setRotate(Double val, boolean limitBelt /* , boolean limitSwitchDisableNeutralOnLOS, int timeoutMs */) { // rotates
                                                                                                       // conveyor belt
                                                                                                       // up or down
-        if (val > 0) {
+        if (limitBelt == true){
+            if (val > 0) {
             rotateBelt.set(ControlMode.PercentOutput, val * 0.75);
-            // rotateBelt.configLimitSwitchDisableNeutralOnLOS(limitSwitchDisableNeutralOnLOS,
-            // timeoutMs);
-            // The above code was research on how to use limit switches that is built into
-            // the TalonSRX
         } else if (val < 0) {
             rotateBelt.set(ControlMode.PercentOutput, val * 0.75);
         } else {
             rotateBelt.set(ControlMode.PercentOutput, 0.0);
-        }
+        } }
+        if (limitBelt == false){
+            if (val > 0)  {
+            rotateBelt.set(ControlMode.PercentOutput, val * 0.75);
+            } else if (val < 0) {
+            rotateBelt.set(ControlMode.PercentOutput, 0.0);
+            } else {
+            rotateBelt.set(ControlMode.PercentOutput, 0.0);
+        } 
     }
+    
+    /*public void setRotate(Double val, boolean limitBelt /* , boolean limitSwitchDisableNeutralOnLOS, int timeoutMs ) { // rotates
+        // conveyor belt
+        // up or down
+if (val > 0) {
+rotateBelt.set(ControlMode.PercentOutput, val * 0.75);
+// rotateBelt.configLimitSwitchDisableNeutralOnLOS(limitSwitchDisableNeutralOnLOS,
+// timeoutMs);
+// The above code was research on how to use limit switches that is built into
+// the TalonSRX
+} else if (val < 0) {
+rotateBelt.set(ControlMode.PercentOutput, val * 0.75);
+} else {
+rotateBelt.set(ControlMode.PercentOutput, 0.0);
+}
+    }*/
 
     public void setBelt(Boolean belter, Boolean beltee) { // for conveyor belt
 
@@ -279,8 +301,9 @@ public class MotorController {
             backPosition = 3650;
         }
 
-        //dartPos(backPosition, darty, collectDart, true);
-        backDartPos(hallTop, hallBottom, laidBack, paidBack);
+        
+        dartPos(backPosition, darty, collectDart, true);
+        //backDartPos(hallTop, hallBottom, laidBack, paidBack);
         dartPos(frontPositionR, darty2, collectDart2, false);
         dartPos(frontPositionL, darty3, collectDart3, false);
         
