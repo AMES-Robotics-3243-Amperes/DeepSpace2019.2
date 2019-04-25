@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 
 import com.ctre.phoenix.ILoopable;
@@ -19,9 +20,9 @@ public class MotorController {
     final int SLOWDOWN = 85; // slow down +- 500
     final int EXTEEEND = 35; // rate of darts extension
 
-    int frontPositionL = 240; // JAMS AT 150-
+    int frontPositionL = 230; // JAMS AT 150-
     int frontPositionR = 300; // JAMS AT 219
-    int backPosition = 275; // JAMS AT ???
+    int backPosition = 240; // JAMS AT 210
 
     long startTime = 0; // for Timer in Encoders
 
@@ -52,6 +53,7 @@ public class MotorController {
     Encoder rightE = new Encoder(0, 1, false, EncodingType.k4X);
 
     DigitalOutput underGlow = new DigitalOutput(7); // for the lights under the robot
+    //DigitalOutput limiter = new DigitalOutput(5);
 
     public void setMotorControllers(boolean compBot) { // initialization for drive objects and gearbox2 following
         if (compBot == true) {
@@ -97,8 +99,8 @@ public class MotorController {
                     driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * 0.2);
                 }
             } else {
-                driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * -0.50);
-                driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * 0.50);
+                driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * -0.45);  //was 50% speed (as of 4/18/19)
+                driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * 0.45);   //was 50% speed (as of 4/18/19)
             }
         }
     }
@@ -177,20 +179,31 @@ public class MotorController {
         }
     }
 
-    public void setRotate(Double val /* , boolean limitSwitchDisableNeutralOnLOS, int timeoutMs */) { // rotates
-                                                                                                      // conveyor belt
-                                                                                                      // up or down
-        if (val > 0) {
+    public void setRotate(Double val, DigitalInput limitBelt) { // rotates conveyor belt up or down
+
+
+        if(limitBelt.get() == true){
+        if (val != 0) {
             rotateBelt.set(ControlMode.PercentOutput, val * 0.75);
+        } else {
+            rotateBelt.set(ControlMode.PercentOutput, 0.0);
+        }
+    }
+
+    if(limitBelt.get() == false){
+        if (val > 0) {
+            rotateBelt.set(ControlMode.PercentOutput, Math.abs(val) * 0.75);
             // rotateBelt.configLimitSwitchDisableNeutralOnLOS(limitSwitchDisableNeutralOnLOS,
             // timeoutMs);
             // The above code was research on how to use limit switches that is built into
             // the TalonSRX
         } else if (val < 0) {
-            rotateBelt.set(ControlMode.PercentOutput, val * 0.75);
+            rotateBelt.set(ControlMode.PercentOutput, val * 0);
         } else {
             rotateBelt.set(ControlMode.PercentOutput, 0.0);
         }
+    }
+
     }
 
     public void setBelt(Boolean belter, Boolean beltee) { // for conveyor belt
@@ -204,7 +217,7 @@ public class MotorController {
         }
     }
 
-    public void backDartPos(boolean Top, boolean Bottom, boolean Extend, boolean Retract) { 
+    /*public void backDartPos(boolean Top, boolean Bottom, boolean Extend, boolean Retract) { 
         if (Bottom == false && Extend == true){
             collectDart.set(1);
         } else if (Top == false && Retract == true){
@@ -213,7 +226,7 @@ public class MotorController {
             collectDart.set(0);
         }
 
-    }
+    }*/
     public void dartPos(int Position, AnalogInput input, VictorSP dartM, boolean isBackdart) {
 
         if (input.getValue() < Position + DARTMOUTH && input.getValue() > Position - DARTMOUTH) {
@@ -243,7 +256,7 @@ public class MotorController {
         }
     }
 
-    public void setDart(Boolean paidBack, Boolean laidBack, Boolean paidUpfront, Boolean laidUpfront, Boolean hallTop, Boolean hallBottom) { // for all three
+    public void setDart(Boolean paidBack, Boolean laidBack, Boolean paidUpfront, Boolean laidUpfront) { // for all three
                                                                                                         // darts
 
         if (paidBack) {
@@ -260,8 +273,8 @@ public class MotorController {
             frontPositionL = frontPositionL - EXTEEEND;
             frontPositionR = frontPositionR - EXTEEEND;
         }
-        if (frontPositionL < 240) {
-            frontPositionL = 240;
+        if (frontPositionL < 230) {
+            frontPositionL = 230;
         }
         if (frontPositionL > 3600) { // JAMS 3650 +
             frontPositionL = 3600; // JAMS 3770
@@ -272,15 +285,15 @@ public class MotorController {
         if (frontPositionR > 3620) {
             frontPositionR = 3620;
         }
-        if (backPosition < 275) {
-            backPosition = 275;
+        if (backPosition < 230) {
+            backPosition = 230;
         }
-        if (backPosition > 3650) {
-            backPosition = 3650;
+        if (backPosition > 3550) {
+            backPosition = 3550;
         }
 
-        //dartPos(backPosition, darty, collectDart, true);
-        backDartPos(hallTop, hallBottom, laidBack, paidBack);
+        dartPos(backPosition, darty, collectDart, true);
+        //backDartPos(hallTop, hallBottom, laidBack, paidBack);
         dartPos(frontPositionR, darty2, collectDart2, false);
         dartPos(frontPositionL, darty3, collectDart3, false);
         
@@ -334,11 +347,11 @@ public class MotorController {
                 distance_adjust = KpDistance * Math.pow(distance_error, 3) + KpDistance2 * distance_error;
             }
 
-            distance_adjust = Math.tanh(distance_adjust) * maxDistAdjust;
+            //distance_adjust = Math.tanh(distance_adjust) * maxDistAdjust;
             steering_adjust = Math.tanh(steering_adjust) * maxAngAdjust;
             // System.out.println("Steering_Adjust = " + steering_adjust);
-            driveM1.set(ControlMode.PercentOutput, steering_adjust + distance_adjust);
-            driveM2.set(ControlMode.PercentOutput, steering_adjust - distance_adjust);
+            driveM1.set(ControlMode.PercentOutput, steering_adjust /*+ distance_adjust*/);
+            driveM2.set(ControlMode.PercentOutput, steering_adjust /*- distance_adjust*/);
             driveM3.follow(driveM1);
             driveM4.follow(driveM2);
             leftE.reset();

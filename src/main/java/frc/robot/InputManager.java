@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
     //
     // RT (Right Trigger) aka TURBO
     //      Sets Robot speed to 75% for duration the button is pressed.
-    // LT (Left Trigger) -
+    // LT (Left Trigger) - turbo toggle as of 4/18/19
     //
     // LB (Left Bumper) - Back Dart Retract
     // RB (Right Bumper) - Back Dart Extend
@@ -94,7 +94,7 @@ public class InputManager {
         hallBottom = new DigitalInput(9);
     }
     Boolean getToggleTurbo() {
-        if (firstInput.getRawButtonPressed(9)){
+        if (firstInput.getRawButtonPressed(7)){ //change to 7 from 9 as of 4/18/19
             turboToggle = !turboToggle;
         }
         return turboToggle;
@@ -147,14 +147,14 @@ public class InputManager {
         return turbo;
     }
 
-    Boolean readHallTop() { //
+    /*Boolean readHallTop() { //
 
         return hallTop.get();
     }
     Boolean readHallBottom() { //
     
         return hallBottom.get();
-    }
+    }*/
     Boolean getPaid() { // Back Linear Actuator retract
 
         paid = firstInput.getRawButton(5);
