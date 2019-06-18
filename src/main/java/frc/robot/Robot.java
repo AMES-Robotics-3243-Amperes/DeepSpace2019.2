@@ -173,6 +173,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("back retracted completely?", IM.readHallTop());
 
     MC.setDart(IM.getPaid(), IM.getLaid(), IM.getPaidUpFront(), IM.getLaidUpFront(), IM.readHallTop(), IM.readHallBottom());
+    
   }
 
   /**
