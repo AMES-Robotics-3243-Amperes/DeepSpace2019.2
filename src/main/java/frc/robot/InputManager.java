@@ -71,8 +71,8 @@ public class InputManager {
     boolean paidUpfront = false;
     boolean laidUpfront = false;
 
-    boolean belter = false;
-    boolean beltee = false;
+    boolean belter = false; //Intakes the Cargo
+    boolean beltee = false; //Spits out the Cargo
     boolean visionButton = false;
 
     boolean limeVision = true;

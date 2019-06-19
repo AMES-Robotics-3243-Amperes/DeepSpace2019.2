@@ -15,9 +15,9 @@ import com.ctre.phoenix.motorcontrol.can.*;
 
 public class MotorController {
     // final means it becomes a constant
-    final int DARTMOUTH = 15; // dart min & max deadzone
+    final int DARTZONE = 15; // dart min & max deadzone
     final int SLOWDOWN = 85; // slow down +- 500
-    final int EXTEEEND = 35; // rate of darts extension
+    final int EXTEND = 35; // rate of darts extension
 
     int frontPositionL = 240; // JAMS AT 150-
     int frontPositionR = 300; // JAMS AT 219
@@ -45,8 +45,6 @@ public class MotorController {
     VictorSPX collectorBag = new VictorSPX(4);
     VictorSPX gearBox1 = new VictorSPX(1);
     VictorSPX gearBox2 = new VictorSPX(2);
-    //VictorSPX carWash1 = new VictorSPX(12);
-    //VictorSPX carWash2 = new VictorSPX(12);
 
     Encoder leftE = new Encoder(3, 4, false, EncodingType.k4X);
     Encoder rightE = new Encoder(0, 1, false, EncodingType.k4X);
@@ -71,13 +69,13 @@ public class MotorController {
         leftE.reset();
         rightE.reset();
         leftE.setDistancePerPulse(1.0 / 76.25);
-        rightE.setDistancePerPulse(1.0 / 76.25); // 1.0/76.25 shows that there is 10 cm for every 76.25 pulses in the
-                                                 // encoder
+        rightE.setDistancePerPulse(1.0 / 76.25); // 1.0/76.25 shows that there is 10 cm for every 76.25 pulses in the encoder
+
     }
 
     public void setCamera(int moveCam){
         if(moveCam == 180){
-            cameraTop.setAngle(15); //test out with servo motor to find correct angles!!
+            cameraTop.setAngle(15);
         } else if(moveCam == 0){
             cameraTop.setAngle(90);
         } else{
@@ -164,7 +162,6 @@ public class MotorController {
     }
 
     public void setLift(Double val) { // for gearbox lifting
-        // val = Math.pow(val, 3); //Hopefully this will work :')
         if (val > 0) {
             gearBox1.set(ControlMode.PercentOutput, val * 0.4);
             gearBox2.follow(gearBox1);
@@ -177,15 +174,13 @@ public class MotorController {
         }
     }
 
-    public void setRotate(Double val /* , boolean limitSwitchDisableNeutralOnLOS, int timeoutMs */) { // rotates
-                                                                                                      // conveyor belt
-                                                                                                      // up or down
+    public void setRotate(Double val /* , boolean limitSwitchDisableNeutralOnLOS, int timeoutMs */) { // rotates conveyor belt up or down
+
         if (val > 0) {
             rotateBelt.set(ControlMode.PercentOutput, val * 0.75);
             // rotateBelt.configLimitSwitchDisableNeutralOnLOS(limitSwitchDisableNeutralOnLOS,
             // timeoutMs);
-            // The above code was research on how to use limit switches that is built into
-            // the TalonSRX
+            // The above code was research on how to use limit switches that is built into the TalonSRX
         } else if (val < 0) {
             rotateBelt.set(ControlMode.PercentOutput, val * 0.75);
         } else {
@@ -216,7 +211,7 @@ public class MotorController {
     }
     public void dartPos(int Position, AnalogInput input, VictorSP dartM, boolean isBackdart) {
 
-        if (input.getValue() < Position + DARTMOUTH && input.getValue() > Position - DARTMOUTH) {
+        if (input.getValue() < Position + DARTZONE && input.getValue() > Position - DARTZONE) {
             dartM.set(0.0);
         } else if (input.getValue() > Position) {
             if (input.getValue() > Position + SLOWDOWN) {
@@ -243,22 +238,22 @@ public class MotorController {
         }
     }
 
-    public void setDart(Boolean paidBack, Boolean laidBack, Boolean paidUpfront, Boolean laidUpfront, Boolean hallTop, Boolean hallBottom) { // for all three
-                                                                                                        // darts
+    public void setDart(Boolean paidBack, Boolean laidBack, Boolean paidUpfront, Boolean laidUpfront, Boolean hallTop, Boolean hallBottom) { // for all three darts
+
 
         if (paidBack) {
-            backPosition = backPosition - EXTEEEND;
+            backPosition = backPosition - EXTEND;
         }
         if (laidBack) {
-            backPosition = backPosition + EXTEEEND;
+            backPosition = backPosition + EXTEND;
         }
         if (laidUpfront) {
-            frontPositionL = frontPositionL + EXTEEEND;
-            frontPositionR = frontPositionR + EXTEEEND;
+            frontPositionL = frontPositionL + EXTEND;
+            frontPositionR = frontPositionR + EXTEND;
         }
         if (paidUpfront) {
-            frontPositionL = frontPositionL - EXTEEEND;
-            frontPositionR = frontPositionR - EXTEEEND;
+            frontPositionL = frontPositionL - EXTEND;
+            frontPositionR = frontPositionR - EXTEND;
         }
         if (frontPositionL < 240) {
             frontPositionL = 240;

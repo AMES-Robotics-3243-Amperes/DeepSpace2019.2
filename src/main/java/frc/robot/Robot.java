@@ -2,8 +2,6 @@ package frc.robot;
 
 import javax.sound.sampled.BooleanControl;
 
-//import com.sun.tools.javac.resources.version;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -102,7 +100,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Cargo Mode", IM.cargoDepositToggle);
     SmartDashboard.putBoolean("Cargo Start", cargoStart);
     SmartDashboard.putData("Default Auto", chooser);
-    SmartDashboard.putBoolean("limit pressed?", IM.getLimit());
+    SmartDashboard.putBoolean("Limit pressed?", IM.getLimit());
 
     MC.setVision(IM.getOrade(), x, v, area);
     MC.setLift(IM.getLift());
