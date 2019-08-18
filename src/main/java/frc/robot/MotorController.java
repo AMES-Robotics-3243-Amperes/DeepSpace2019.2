@@ -52,8 +52,8 @@ public class MotorController {
     Encoder leftE = new Encoder(3, 4, false, EncodingType.k4X);
     Encoder rightE = new Encoder(0, 1, false, EncodingType.k4X);
 
-    DigitalOutput underGlow = new DigitalOutput(7); // for the lights under the robot
-    //DigitalOutput limiter = new DigitalOutput(5);
+    DigitalOutput underGlow = new DigitalOutput(8); // for the lights under the robot
+    DigitalOutput underGlow2 = new DigitalOutput(9);    //
 
     public void setMotorControllers(boolean compBot) { // initialization for drive objects and gearbox2 following
         if (compBot == true) {
@@ -360,8 +360,10 @@ public class MotorController {
 
     }
 
-    /*public void setGlow(boolean input) { // for the lights under the robot
-        underGlow.set(input);
-    }*/
+    public void setGlow(Boolean[] glowArray) { // for the lights under the robot
+        underGlow.set(glowArray[0]);
+        underGlow2.set(glowArray[1]);
+        
+    }
 
 }

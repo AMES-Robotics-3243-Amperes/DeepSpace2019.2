@@ -90,8 +90,8 @@ public class InputManager {
     
     public void IMinit(){
         limitSwitch = new DigitalInput(5);
-        hallTop = new DigitalInput(8);
-        hallBottom = new DigitalInput(9);
+        hallTop = new DigitalInput(2);  //8
+        hallBottom = new DigitalInput(6);   //9
     }
     Boolean getToggleTurbo() {
         if (firstInput.getRawButtonPressed(7)){ //change to 7 from 9 as of 4/18/19
@@ -234,12 +234,17 @@ public class InputManager {
         return rotateLift;
     }
 
-    /*Boolean getGlow() {  //for the lights under the robot
-		if(secondInput.getRawButtonPressed(10)) {
+    Boolean[] getGlow() {  //for the lights under the robot
+		/*if(secondInput.getRawButtonPressed(10)) {
 			lightStatus = !lightStatus;
-		}
+        }*/
+        Boolean[] lightStatus = new Boolean[2];
+
+        lightStatus[0] = firstInput.getRawButton(2);
+        lightStatus[1] = firstInput.getRawButton(3);
+
 		return lightStatus;
-    }*/
+}
     
     Boolean getLimit() {
 
