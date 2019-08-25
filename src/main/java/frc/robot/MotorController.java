@@ -50,8 +50,8 @@ public class MotorController {
     Encoder leftE = new Encoder(3, 4, false, EncodingType.k4X);
     Encoder rightE = new Encoder(0, 1, false, EncodingType.k4X);
 
-    DigitalOutput underGlow = new DigitalOutput(8); // for the lights under the robot
-    DigitalOutput underGlow2 = new DigitalOutput(9);    //
+    //DigitalOutput underGlow = new DigitalOutput(8); // for the lights under the robot
+    //DigitalOutput underGlow2 = new DigitalOutput(9);    //
 
     public void setMotorControllers(boolean compBot) { // initialization for drive objects and gearbox2 following
         if (compBot == true) {
@@ -60,10 +60,15 @@ public class MotorController {
             driveM3 = new WPI_VictorSPX(10);
             driveM4 = new WPI_VictorSPX(7); // change when new VictorSPX for motor 4 come
         } else {
-            driveM1 = new WPI_TalonSRX(3);
+            /*driveM1 = new WPI_TalonSRX(3);
             driveM2 = new WPI_TalonSRX(1);
             driveM3 = new WPI_TalonSRX(4);
-            driveM4 = new WPI_TalonSRX(2);
+            driveM4 = new WPI_TalonSRX(2);*/
+
+            driveM1 = new WPI_VictorSPX(9);
+            driveM2 = new WPI_VictorSPX(8);
+            driveM3 = new WPI_VictorSPX(10);
+            driveM4 = new WPI_VictorSPX(7);
         }
         // odds are left side and evens are right side of joystick
         driveM3.follow(driveM1);
@@ -176,17 +181,11 @@ public class MotorController {
         }
     }
 
-<<<<<<< HEAD
     public void setRotate(Double val, DigitalInput limitBelt) { // rotates conveyor belt up or down
 
 
         if(limitBelt.get() == true){
         if (val != 0) {
-=======
-    public void setRotate(Double val /* , boolean limitSwitchDisableNeutralOnLOS, int timeoutMs */) { // rotates conveyor belt up or down
-
-        if (val > 0) {
->>>>>>> cb197dda756e6f89a1738a34c81447a5ca8e0c2b
             rotateBelt.set(ControlMode.PercentOutput, val * 0.75);
         } else {
             rotateBelt.set(ControlMode.PercentOutput, 0.0);
@@ -258,13 +257,8 @@ public class MotorController {
         }
     }
 
-<<<<<<< HEAD
     public void setDart(Boolean paidBack, Boolean laidBack, Boolean paidUpfront, Boolean laidUpfront) { // for all three
                                                                                                         // darts
-=======
-    public void setDart(Boolean paidBack, Boolean laidBack, Boolean paidUpfront, Boolean laidUpfront, Boolean hallTop, Boolean hallBottom) { // for all three darts
-
->>>>>>> cb197dda756e6f89a1738a34c81447a5ca8e0c2b
 
         if (paidBack) {
             backPosition = backPosition - EXTEND;
@@ -367,10 +361,10 @@ public class MotorController {
 
     }
 
-    public void setGlow(Boolean[] glowArray) { // for the lights under the robot
+    /*public void setGlow(Boolean[] glowArray) { // for the lights under the robot
         underGlow.set(glowArray[0]);
         underGlow2.set(glowArray[1]);
         
-    }
+    }*/
 
 }

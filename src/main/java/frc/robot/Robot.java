@@ -103,13 +103,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Turbo Mode", IM.getToggleTurbo());
     SmartDashboard.putBoolean("Cargo Mode", IM.cargoDepositToggle);
     SmartDashboard.putBoolean("Cargo Start", cargoStart);
-<<<<<<< HEAD
     //SmartDashboard.putData("Default Auto", chooser);
     SmartDashboard.putBoolean("limit pressed?", IM.getLimit());
-=======
-    SmartDashboard.putData("Default Auto", chooser);
-    SmartDashboard.putBoolean("Limit pressed?", IM.getLimit());
->>>>>>> cb197dda756e6f89a1738a34c81447a5ca8e0c2b
 
     MC.setVision(IM.getOrade(), x, v, area);
     MC.setLift(IM.getLift());
@@ -176,14 +171,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Left Dart Value", darty3);
     SmartDashboard.putBoolean("limit pressed?", IM.getLimit());
 
-<<<<<<< HEAD
     MC.setDart(IM.getPaid(), IM.getLaid(), IM.getPaidUpFront(), IM.getLaidUpFront());
-    MC.setGlow(IM.getGlow());
+    //MC.setGlow(IM.getGlow());
 
-=======
-    MC.setDart(IM.getPaid(), IM.getLaid(), IM.getPaidUpFront(), IM.getLaidUpFront(), IM.readHallTop(), IM.readHallBottom());
-    
->>>>>>> cb197dda756e6f89a1738a34c81447a5ca8e0c2b
   }
 
   /**
