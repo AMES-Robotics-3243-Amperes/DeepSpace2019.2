@@ -2,8 +2,6 @@ package frc.robot;
 
 import javax.sound.sampled.BooleanControl;
 
-//import com.sun.tools.javac.resources.version;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -14,6 +12,8 @@ import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DigitalInput;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -28,10 +28,10 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
  * directory.j
  */
 public class Robot extends TimedRobot {
-  final String defaultAuto = "Default";
+  /*final String defaultAuto = "Default";
   final String customAuto = "My Auto";
   String autoSelected;
-  SendableChooser<Boolean> chooser = new SendableChooser<>();
+  SendableChooser<Boolean> chooser = new SendableChooser<>();*/
 
   InputManager IM = new InputManager();
   MotorController MC = new MotorController();
@@ -51,7 +51,7 @@ public class Robot extends TimedRobot {
 
   long startTime = 0;
 
-  final boolean compBot = true; // false is practice
+  final boolean compBot = false; // false is practice
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -59,6 +59,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+  
+    IM.IMinit();
 
     camMode = table.getEntry("camMode");
     pipeline = table.getEntry("pipeline");
@@ -67,8 +69,8 @@ public class Robot extends TimedRobot {
     tv = table.getEntry("tv");
     ta = table.getEntry("ta");
 
-    chooser.addDefault(defaultAuto, new Boolean(true));
-    chooser.addObject(customAuto, new Boolean(false));
+    /*chooser.addDefault(defaultAuto, new Boolean(true));
+    chooser.addObject(customAuto, new Boolean(false));*/
 
     camMode.setFlags(1);
     pipeline.setNumber(0);
@@ -101,11 +103,12 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Turbo Mode", IM.getToggleTurbo());
     SmartDashboard.putBoolean("Cargo Mode", IM.cargoDepositToggle);
     SmartDashboard.putBoolean("Cargo Start", cargoStart);
-    SmartDashboard.putData("Default Auto", chooser);
+    //SmartDashboard.putData("Default Auto", chooser);
+    SmartDashboard.putBoolean("limit pressed?", IM.getLimit());
 
     MC.setVision(IM.getOrade(), x, v, area);
     MC.setLift(IM.getLift());
-    MC.setRotate(IM.getRotateConveyor());
+    MC.setRotate(IM.getRotateConveyor(), IM.limitSwitch);
     MC.drive(IM.drivingJoysticks(), IM.getOrade(), IM.turbo(), IM.getToggleTurbo());
     MC.setBelt(IM.getBelter(), IM.getBeltee());
     
@@ -113,7 +116,6 @@ public class Robot extends TimedRobot {
 
     MC.setCamera(IM.getCamera());
 
-    MC.setGlow(IM.getGlow()); //for the lights under the robot
   }
 
   /**
@@ -138,18 +140,17 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
 
-    if(startTime == 0){
+    /*if(startTime == 0){
       startTime = System.currentTimeMillis();
     }
     long timeNow = System.currentTimeMillis();
     timeNow = timeNow - startTime;
-    if(timeNow <= 500 && chooser.getSelected()){
-      MC.driveM1.set(ControlMode.PercentOutput, 0.5); // 900 sec @ 0.9 Speed
-      MC.driveM2.set(ControlMode.PercentOutput, -0.5);
+    if(timeNow <= 100 && chooser.getSelected()){
+      MC.driveM1.set(ControlMode.PercentOutput, 0);
+      MC.driveM2.set(ControlMode.PercentOutput, 0);
       System.out.println(timeNow);
-    } else {
+    } else {*/
       teleAuto();
-    }
   }
 
   /**
@@ -168,8 +169,11 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Back Dart Value", darty);
     SmartDashboard.putNumber("Right Dart Value", darty2);
     SmartDashboard.putNumber("Left Dart Value", darty3);
+    SmartDashboard.putBoolean("limit pressed?", IM.getLimit());
 
-    IM.lightStatus = MC.setDart(IM.getPaid(), IM.getLaid(), IM.getPaidUpFront(), IM.getLaidUpFront(), IM.getGlow());
+    MC.setDart(IM.getPaid(), IM.getLaid(), IM.getPaidUpFront(), IM.getLaidUpFront());
+    //MC.setGlow(IM.getGlow());
+
   }
 
   /**

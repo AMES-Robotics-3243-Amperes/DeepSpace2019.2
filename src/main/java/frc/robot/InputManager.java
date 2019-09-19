@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.DigitalInput;
 
     //////////////////////////////////////////////
     // When Mode is Green, Left Joystick switches to D-PAD
@@ -17,7 +18,7 @@ import edu.wpi.first.wpilibj.Joystick;
     //
     // RT (Right Trigger) aka TURBO
     //      Sets Robot speed to 75% for duration the button is pressed.
-    // LT (Left Trigger) -
+    // LT (Left Trigger) - turbo toggle as of 4/18/19
     //
     // LB (Left Bumper) - Back Dart Retract
     // RB (Right Bumper) - Back Dart Extend
@@ -70,8 +71,8 @@ public class InputManager {
     boolean paidUpfront = false;
     boolean laidUpfront = false;
 
-    boolean belter = false;
-    boolean beltee = false;
+    boolean belter = false; //Intakes the Cargo
+    boolean beltee = false; //Spits out the Cargo
     boolean visionButton = false;
 
     boolean limeVision = true;
@@ -81,10 +82,19 @@ public class InputManager {
     Double liftVal;
     Double rotateLift;
 
-    boolean lightStatus = false;
+    boolean limitStatus = false;
+    DigitalInput limitSwitch;
 
+    DigitalInput hallTop;
+    DigitalInput hallBottom;
+    
+    public void IMinit(){
+        limitSwitch = new DigitalInput(5);
+        hallTop = new DigitalInput(8);  //2
+        hallBottom = new DigitalInput(9);   //6
+    }
     Boolean getToggleTurbo() {
-        if (firstInput.getRawButtonPressed(9)){
+        if (firstInput.getRawButtonPressed(7)){ //change to 7 from 9 as of 4/18/19
             turboToggle = !turboToggle;
         }
         return turboToggle;
@@ -137,6 +147,14 @@ public class InputManager {
         return turbo;
     }
 
+    /*Boolean readHallTop() { //
+
+        return hallTop.get();
+    }
+    Boolean readHallBottom() { //
+    
+        return hallBottom.get();
+    }*/
     Boolean getPaid() { // Back Linear Actuator retract
 
         paid = firstInput.getRawButton(5);
@@ -216,18 +234,21 @@ public class InputManager {
         return rotateLift;
     } //We took off the snowblower motor
 
-    /*Boolean getGlow() {  //for the lights under the robot
+    /*Boolean[] getGlow() {  //for the lights under the robot
 		if(secondInput.getRawButtonPressed(10)) {
 			lightStatus = !lightStatus;
-		}
-		return lightStatus;
-    }*/
-    
-    Boolean getGlow() {
-        
-        lightStatus = secondInput.getRawButton(10);
+        }
+        Boolean[] lightStatus = new Boolean[2];
 
-        return lightStatus;
+        lightStatus[0] = firstInput.getRawButton(2);
+        lightStatus[1] = firstInput.getRawButton(3);
+
+		return lightStatus;
+}*/
+    
+    Boolean getLimit() {
+
+        return limitSwitch.get();
 
     }
 

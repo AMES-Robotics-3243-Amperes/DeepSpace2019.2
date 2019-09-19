@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 
 import com.ctre.phoenix.ILoopable;
@@ -15,13 +16,13 @@ import com.ctre.phoenix.motorcontrol.can.*;
 
 public class MotorController {
     // final means it becomes a constant
-    final int DARTMOUTH = 15; // dart min & max deadzone
+    final int DARTZONE = 15; // dart min & max deadzone
     final int SLOWDOWN = 85; // slow down +- 500
-    final int EXTEEEND = 35; // rate of darts extension
+    final int EXTEND = 35; // rate of darts extension
 
-    int frontPositionL = 240; // JAMS AT 150-
+    int frontPositionL = 230; // JAMS AT 150-
     int frontPositionR = 300; // JAMS AT 219
-    int backPosition = 4; // JAMS AT 53
+    int backPosition = 240; // JAMS AT 210
 
     long startTime = 0; // for Timer in Encoders
 
@@ -46,13 +47,12 @@ public class MotorController {
 
     VictorSPX gearBox1 = new VictorSPX(1);
     VictorSPX gearBox2 = new VictorSPX(2);
-    //VictorSPX carWash1 = new VictorSPX(12);
-    //VictorSPX carWash2 = new VictorSPX(12);
 
     Encoder leftE = new Encoder(3, 4, false, EncodingType.k4X);
     Encoder rightE = new Encoder(0, 1, false, EncodingType.k4X);
 
-    DigitalOutput underGlow = new DigitalOutput(7); // for the lights under the robot
+    //DigitalOutput underGlow = new DigitalOutput(8); // for the lights under the robot
+    //DigitalOutput underGlow2 = new DigitalOutput(9);    //
 
     public void setMotorControllers(boolean compBot) { // initialization for drive objects and gearbox2 following
         if (compBot == true) {
@@ -61,10 +61,15 @@ public class MotorController {
             driveM3 = new WPI_VictorSPX(10);
             driveM4 = new WPI_VictorSPX(7); // change when new VictorSPX for motor 4 come
         } else {
-            driveM1 = new WPI_TalonSRX(3);
+            /*driveM1 = new WPI_TalonSRX(3);
             driveM2 = new WPI_TalonSRX(1);
             driveM3 = new WPI_TalonSRX(4);
-            driveM4 = new WPI_TalonSRX(2);
+            driveM4 = new WPI_TalonSRX(2);*/
+
+            driveM1 = new WPI_VictorSPX(9);
+            driveM2 = new WPI_VictorSPX(8);
+            driveM3 = new WPI_VictorSPX(10);
+            driveM4 = new WPI_VictorSPX(7);
         }
         // odds are left side and evens are right side of joystick
         driveM3.follow(driveM1);
@@ -72,13 +77,13 @@ public class MotorController {
         leftE.reset();
         rightE.reset();
         leftE.setDistancePerPulse(1.0 / 76.25);
-        rightE.setDistancePerPulse(1.0 / 76.25); // 1.0/76.25 shows that there is 10 cm for every 76.25 pulses in the
-                                                 // encoder
+        rightE.setDistancePerPulse(1.0 / 76.25); // 1.0/76.25 shows that there is 10 cm for every 76.25 pulses in the encoder
+
     }
 
     public void setCamera(int moveCam){
         if(moveCam == 180){
-            cameraTop.setAngle(15); //test out with servo motor to find correct angles!!
+            cameraTop.setAngle(15);
         } else if(moveCam == 0){
             cameraTop.setAngle(90);
         } else{
@@ -98,8 +103,8 @@ public class MotorController {
                     driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * 0.35);
                 }
             } else {
-                driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * -0.55);
-                driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * 0.60);
+                driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * -0.45);  //was 50% speed (as of 4/18/19)
+                driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * 0.45);   //was 50% speed (as of 4/18/19)
             }
         }
     }
@@ -165,7 +170,6 @@ public class MotorController {
     }
 
     public void setLift(Double val) { // for gearbox lifting
-        // val = Math.pow(val, 3); //Hopefully this will work :')
         if (val > 0) {
             gearBox1.set(ControlMode.PercentOutput, val * 0.4);
             gearBox2.follow(gearBox1);
@@ -178,20 +182,30 @@ public class MotorController {
         }
     }
 
-    public void setRotate(Double val /* , boolean limitSwitchDisableNeutralOnLOS, int timeoutMs */) { // rotates
-                                                                                                      // conveyor belt
-                                                                                                      // up or down
-        if (val > 0) {
-            rotateBelt.set(ControlMode.PercentOutput, val * 1);
-            // rotateBelt.configLimitSwitchDisableNeutralOnLOS(limitSwitchDisableNeutralOnLOS,
-            // timeoutMs);
-            // The above code was research on how to use limit switches that is built into
-            // the TalonSRX
-        } else if (val < 0) {
-            rotateBelt.set(ControlMode.PercentOutput, val * 1);
+    public void setRotate(Double val, DigitalInput limitBelt) { // rotates conveyor belt up or down
+
+
+        if(limitBelt.get() == true){
+        if (val != 0) {
+            rotateBelt.set(ControlMode.PercentOutput, val * 0.75);
         } else {
             rotateBelt.set(ControlMode.PercentOutput, 0.0);
         }
+    }
+
+    if(limitBelt.get() == false){
+        if (val > 0) {
+            rotateBelt.set(ControlMode.PercentOutput, Math.abs(val) * 0.75);
+            // rotateBelt.configLimitSwitchDisableNeutralOnLOS(limitSwitchDisableNeutralOnLOS,
+            // timeoutMs);
+            // The above code was research on how to use limit switches that is built into the TalonSRX
+        } else if (val < 0) {
+            rotateBelt.set(ControlMode.PercentOutput, val * 0);
+        } else {
+            rotateBelt.set(ControlMode.PercentOutput, 0.0);
+        }
+    }
+
     }
 
     public void setBelt(Boolean belter, Boolean beltee) { // for conveyor belt
@@ -205,9 +219,19 @@ public class MotorController {
         }
     }
 
+    /*public void backDartPos(boolean Top, boolean Bottom, boolean Extend, boolean Retract) { 
+        if (Bottom == false && Extend == true){
+            collectDart.set(1);
+        } else if (Top == false && Retract == true){
+            collectDart.set(-1);
+        } else {
+            collectDart.set(0);
+        }
+
+    }*/
     public void dartPos(int Position, AnalogInput input, VictorSP dartM, boolean isBackdart) {
 
-        if (input.getValue() < Position + DARTMOUTH && input.getValue() > Position - DARTMOUTH) {
+        if (input.getValue() < Position + DARTZONE && input.getValue() > Position - DARTZONE) {
             dartM.set(0.0);
         } else if (input.getValue() > Position) {
             if (input.getValue() > Position + SLOWDOWN) {
@@ -234,29 +258,25 @@ public class MotorController {
         }
     }
 
-    public Boolean setDart(Boolean paidBack, Boolean laidBack, Boolean paidUpfront, Boolean laidUpfront, Boolean underGlow) { // for all three
+    public void setDart(Boolean paidBack, Boolean laidBack, Boolean paidUpfront, Boolean laidUpfront) { // for all three
                                                                                                         // darts
 
         if (paidBack) {
-            backPosition = backPosition - EXTEEEND;
-            underGlow = false;
+            backPosition = backPosition - EXTEND;
         }
         if (laidBack) {
-            backPosition = backPosition + EXTEEEND;
-            underGlow = false;
+            backPosition = backPosition + EXTEND;
         }
         if (laidUpfront) {
-            frontPositionL = frontPositionL + EXTEEEND;
-            frontPositionR = frontPositionR + EXTEEEND;
-            underGlow = false;
+            frontPositionL = frontPositionL + EXTEND;
+            frontPositionR = frontPositionR + EXTEND;
         }
         if (paidUpfront) {
-            frontPositionL = frontPositionL - EXTEEEND;
-            frontPositionR = frontPositionR - EXTEEEND;
-            underGlow = false;
+            frontPositionL = frontPositionL - EXTEND;
+            frontPositionR = frontPositionR - EXTEND;
         }
-        if (frontPositionL < 240) {
-            frontPositionL = 240;
+        if (frontPositionL < 230) {
+            frontPositionL = 230;
         }
         if (frontPositionL > 3600) { // JAMS 3650 +
             frontPositionL = 3600; // JAMS 3770
@@ -267,18 +287,18 @@ public class MotorController {
         if (frontPositionR > 3620) {
             frontPositionR = 3620;
         }
-        if (backPosition < 4) {
-            backPosition = 4;
+        if (backPosition < 230) {
+            backPosition = 230;
         }
-        if (backPosition > 3200) {
-            backPosition = 3200;
+        if (backPosition > 3550) {
+            backPosition = 3550;
         }
 
-        //dartPos(backPosition, darty, collectDart, true);
+        dartPos(backPosition, darty, collectDart, true);
+        //backDartPos(hallTop, hallBottom, laidBack, paidBack);
         dartPos(frontPositionR, darty2, collectDart2, false);
         dartPos(frontPositionL, darty3, collectDart3, false);
         
-        return underGlow;
     }
 
     // For Vision 2019 ~! :D
@@ -331,11 +351,11 @@ public class MotorController {
                 distance_adjust = KpDistance * Math.pow(distance_error, 3) + KpDistance2 * distance_error;
             }
 
-            distance_adjust = Math.tanh(distance_adjust) * maxDistAdjust;
+            //distance_adjust = Math.tanh(distance_adjust) * maxDistAdjust;
             steering_adjust = Math.tanh(steering_adjust) * maxAngAdjust;
             // System.out.println("Steering_Adjust = " + steering_adjust);
-            driveM1.set(ControlMode.PercentOutput, steering_adjust + distance_adjust);
-            driveM2.set(ControlMode.PercentOutput, steering_adjust - distance_adjust);
+            driveM1.set(ControlMode.PercentOutput, steering_adjust /*+ distance_adjust*/);
+            driveM2.set(ControlMode.PercentOutput, steering_adjust /*- distance_adjust*/);
             driveM3.follow(driveM1);
             driveM4.follow(driveM2);
             leftE.reset();
@@ -344,16 +364,10 @@ public class MotorController {
 
     }
 
-    /*public void setGlow(boolean input) { // for the lights under the robot
-        underGlow.set(input);
+    /*public void setGlow(Boolean[] glowArray) { // for the lights under the robot
+        underGlow.set(glowArray[0]);
+        underGlow2.set(glowArray[1]);
+        
     }*/
-
-    public void setGlow(boolean light) {
-        if(light){
-            underGlow.set(true);
-        } else{
-            underGlow.set(false);
-        }
-        }
 
 }
