@@ -21,7 +21,7 @@ public class MotorController {
 
     int frontPositionL = 240; // JAMS AT 150-
     int frontPositionR = 300; // JAMS AT 219
-    int backPosition = 275; // JAMS AT ???
+    int backPosition = 4; // JAMS AT 53
 
     long startTime = 0; // for Timer in Encoders
 
@@ -41,8 +41,9 @@ public class MotorController {
 
     Servo cameraTop = new Servo(2); //change num later
 
-    VictorSPX rotateBelt = new VictorSPX(11);
-    VictorSPX collectorBag = new VictorSPX(4);
+    VictorSPX rotateBelt = new VictorSPX(11); //got rid of snowblower motor
+    VictorSPX collectorBag = new VictorSPX(4); //compBot is 4, practice is 9
+
     VictorSPX gearBox1 = new VictorSPX(1);
     VictorSPX gearBox2 = new VictorSPX(2);
     //VictorSPX carWash1 = new VictorSPX(12);
@@ -81,7 +82,7 @@ public class MotorController {
         } else if(moveCam == 0){
             cameraTop.setAngle(90);
         } else{
-            cameraTop.setAngle(50);
+            cameraTop.setAngle(40);
         }
     }
 
@@ -91,14 +92,14 @@ public class MotorController {
             if (turbo) {
                 if (turboMode) {
                     driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * -0.75);
-                    driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * 0.75);
+                    driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * 0.80);
                 } else {
-                    driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * -0.2);
-                    driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * 0.2);
+                    driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * -0.3);
+                    driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * 0.35);
                 }
             } else {
-                driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * -0.50);
-                driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * 0.50);
+                driveM1.set(ControlMode.PercentOutput, driveSpeed[0] * -0.55);
+                driveM2.set(ControlMode.PercentOutput, driveSpeed[1] * 0.60);
             }
         }
     }
@@ -181,13 +182,13 @@ public class MotorController {
                                                                                                       // conveyor belt
                                                                                                       // up or down
         if (val > 0) {
-            rotateBelt.set(ControlMode.PercentOutput, val * 0.75);
+            rotateBelt.set(ControlMode.PercentOutput, val * 1);
             // rotateBelt.configLimitSwitchDisableNeutralOnLOS(limitSwitchDisableNeutralOnLOS,
             // timeoutMs);
             // The above code was research on how to use limit switches that is built into
             // the TalonSRX
         } else if (val < 0) {
-            rotateBelt.set(ControlMode.PercentOutput, val * 0.75);
+            rotateBelt.set(ControlMode.PercentOutput, val * 1);
         } else {
             rotateBelt.set(ControlMode.PercentOutput, 0.0);
         }
@@ -266,14 +267,14 @@ public class MotorController {
         if (frontPositionR > 3620) {
             frontPositionR = 3620;
         }
-        if (backPosition < 275) {
-            backPosition = 275;
+        if (backPosition < 4) {
+            backPosition = 4;
         }
-        if (backPosition > 3650) {
-            backPosition = 3650;
+        if (backPosition > 3200) {
+            backPosition = 3200;
         }
 
-        dartPos(backPosition, darty, collectDart, true);
+        //dartPos(backPosition, darty, collectDart, true);
         dartPos(frontPositionR, darty2, collectDart2, false);
         dartPos(frontPositionL, darty3, collectDart3, false);
         
@@ -282,7 +283,7 @@ public class MotorController {
 
     // For Vision 2019 ~! :D
     public void setVision(boolean value, double x, double v, double area) {
-        float KpSteering = 0.00002f;
+        float KpSteering = 0.000009f; //0.00002f;
         float KpSteering2 = 0.02f;
         float KpDistance = 0.01f;
         float KpDistance2 = 0.2f;
@@ -305,14 +306,16 @@ public class MotorController {
             // We don't see the target, seek for the target by spinning in place at a safe
             // speed.
             {
-                steering_adjust = 0.25f;
+                steering_adjust = 0.5f;
             }
 
             else if (x > 0 && v != 0)
             // We do see the target, execute aiming code
             {
+                //steering_adjust = KpSteering*heading_error - min_command;
                 steering_adjust = (KpSteering * Math.pow(heading_error, 3) + KpSteering2 * heading_error) + min_command;
             } else if (x < 0 && v != 0) {
+                //steering_adjust = KpSteering*heading_error + min_command;
                 steering_adjust = (KpSteering * Math.pow(heading_error, 3) + KpSteering2 * heading_error) - min_command;
             }
 

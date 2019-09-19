@@ -143,9 +143,9 @@ public class Robot extends TimedRobot {
     }
     long timeNow = System.currentTimeMillis();
     timeNow = timeNow - startTime;
-    if(timeNow <= 900 && chooser.getSelected()){
-      MC.driveM1.set(ControlMode.PercentOutput, -0.9);
-      MC.driveM2.set(ControlMode.PercentOutput, 0.9);
+    if(timeNow <= 500 && chooser.getSelected()){
+      MC.driveM1.set(ControlMode.PercentOutput, 0.5); // 900 sec @ 0.9 Speed
+      MC.driveM2.set(ControlMode.PercentOutput, -0.5);
       System.out.println(timeNow);
     } else {
       teleAuto();

@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.Joystick;
     //
     // LB (Left Bumper) - Back Dart Retract
     // RB (Right Bumper) - Back Dart Extend
-    //      
+    //       
     // Back Button - Turbo Toggle
     //
     // Start Button - Switches Limelight between Vision & Targeting
@@ -214,7 +214,7 @@ public class InputManager {
         }
 
         return rotateLift;
-    }
+    } //We took off the snowblower motor
 
     /*Boolean getGlow() {  //for the lights under the robot
 		if(secondInput.getRawButtonPressed(10)) {
